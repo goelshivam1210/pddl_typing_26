@@ -1,0 +1,35 @@
+# macOS
+.DS_Store
+
+# VS Code workspace settings
+.vscode/
+
+# LaTeX intermediate and generated files
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.ilg
+*.ind
+*.idx
+*.lof
+*.log
+*.lot
+*.nav
+*.out
+*.run.xml
+*.snm
+*.synctex.gz
+*.toc
+*.vrb
+*.xdv
+*.dvi
+*.ps
+*.pdf
+
+# Common temporary files
+*~
+*.swp
+*.tmp
