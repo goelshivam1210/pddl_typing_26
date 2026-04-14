@@ -1,0 +1,344 @@
+
+@inproceedings{vered_heuristic_2017,
+author = {Vered, Mor and Kaminka, Gal A.},
+title = {Heuristic online goal recognition in continuous domains},
+year = {2017},
+isbn = {9780999241103},
+publisher = {AAAI Press},
+abstract = {Goal recognition is the problem of inferring the goal of an agent, based on its observed actions. An inspiring approach--plan recognition by planning (PRP)--uses off-the-shelf planners to dynamically generate plans for given goals, eliminating the need for the traditional plan library. However, existing PRP formulation is inherently inefficient in online recognition, and cannot be used with motion planners for continuous spaces. In this paper, we utilize a different PRP formulation which allows for online goal recognition, and for application in continuous spaces. We present an online recognition algorithm, where two heuristic decision points may be used to improve run-time significantly over existing work. We specify heuristics for continuous domains, prove guarantees on their use, and empirically evaluate the algorithm over n hundreds of experiments in both a 3D navigational environment and a cooperative robotic team task.},
+booktitle = {Proceedings of the 26th International Joint Conference on Artificial Intelligence},
+pages = {4447–4454},
+numpages = {8},
+location = {Melbourne, Australia},
+series = {IJCAI'17}
+}
+
+@article{hazra_saycanpay_2024,
+	title = {{SayCanPay}: {Heuristic} {Planning} with {Large} {Language} {Models} {Using} {Learnable} {Domain} {Knowledge}},
+	volume = {38},
+	issn = {2374-3468, 2159-5399},
+	shorttitle = {{SayCanPay}},
+	url = {https://ojs.aaai.org/index.php/AAAI/article/view/29991},
+	doi = {10.1609/aaai.v38i18.29991},
+	abstract = {Large Language Models (LLMs) have demonstrated impressive planning abilities due to their vast “world knowledge”. Yet, obtaining plans that are both feasible (grounded in affordances) and cost-effective (in plan length), remains a challenge, despite recent progress. This contrasts with heuristic planning methods that employ domain knowledge (formalized in action models such as PDDL) and heuristic search to generate feasible, optimal plans. Inspired by this, we propose to combine the power of LLMs and heuristic planning by leveraging the world knowledge of LLMs and the principles of heuristic search. Our approach, SayCanPay, employs LLMs to generate actions (Say) guided by learnable domain knowledge, that evaluates actions’ feasibility (Can) and long-term reward/payoff (Pay), and heuristic search to select the best sequence of actions. Our contributions are (1) a novel framing of the LLM planning problem in the context of heuristic planning, (2) integrating grounding and costeffective elements into the generated plans, and (3) using heuristic search over actions. Our extensive evaluations show that our model surpasses other LLM planning approaches.},
+	language = {en},
+	number = {18},
+	urldate = {2024-11-06},
+	journal = {Proceedings of the AAAI Conference on Artificial Intelligence},
+	author = {Hazra, Rishi and Zuidberg Dos Martires, Pedro and De Raedt, Luc},
+	month = mar,
+	year = {2024},
+	pages = {20123--20133},
+	file = {Hazra et al. - 2024 - SayCanPay Heuristic Planning with Large Language .pdf:/home/brennan/Zotero/storage/C9TK798H/Hazra et al. - 2024 - SayCanPay Heuristic Planning with Large Language .pdf:application/pdf},
+}
+
+@inproceedings{valmeekam_large_nodate,
+  title={Large language models still can't plan (a benchmark for LLMs on planning and reasoning about change)},
+  author={Valmeekam, Karthik and Olmo, Alberto and Sreedharan, Sarath and Kambhampati, Subbarao},
+  booktitle={NeurIPS 2022 Foundation Models for Decision Making Workshop},
+  year={2022}
+}
+
+
+@article{bonet_planning_2001,
+	title = {Planning as heuristic search},
+	volume = {129},
+	copyright = {https://www.elsevier.com/tdm/userlicense/1.0/},
+	issn = {00043702},
+	url = {https://linkinghub.elsevier.com/retrieve/pii/S0004370201001084},
+	doi = {10.1016/S0004-3702(01)00108-4},
+	abstract = {In the AIPS98 Planning Contest, the HSP planner showed that heuristic search planners can be competitive with state-of-the-art Graphplan and SAT planners. Heuristic search planners like HSP transform planning problems into problems of heuristic search by automatically extracting heuristics from Strips encodings. They differ from specialized problem solvers such as those developed for the 24-Puzzle and Rubik’s Cube in that they use a general declarative language for stating problems and a general mechanism for extracting heuristics from these representations.},
+	language = {en},
+	number = {1-2},
+	urldate = {2024-11-18},
+	journal = {Artificial Intelligence},
+	author = {Bonet, Blai and Geffner, Héctor},
+	month = jun,
+	year = {2001},
+	pages = {5--33},
+	file = {bonet_planning_as_heuristic_search.pdf:/home/brennan/org/tufts/papers/pdf/bonet_planning_as_heuristic_search.pdf:application/pdf},
+}
+
+@article{liu_llmp_2023,
+  title={Llm+ p: Empowering large language models with optimal planning proficiency},
+  author={Liu, Bo and Jiang, Yuqian and Zhang, Xiaohan and Liu, Qiang and Zhang, Shiqi and Biswas, Joydeep and Stone, Peter},
+  journal={arXiv preprint arXiv:2304.11477},
+  year={2023}
+}
+
+
+@inproceedings{shukla_lgts_2023,
+author = {Shukla, Yash and Gao, Wenchang and Sarathy, Vasanth and Velasquez, Alvaro and Wright, Robert and Sinapov, Jivko},
+title = {LgTS: Dynamic Task Sampling using LLM-generated Sub-Goals for Reinforcement Learning Agents},
+year = {2024},
+isbn = {9798400704864},
+publisher = {International Foundation for Autonomous Agents and Multiagent Systems},
+address = {Richland, SC},
+abstract = {Recent advancements in reasoning abilities of Large Language Models (LLM) has promoted their usage in problems that require high-level planning for artificial agents. However, current techniques that utilize LLMs for such planning tasks make certain key assumptions such as, access to datasets that permit finetuning, meticulously engineered prompts that only provide relevant and essential information to the LLM, and most importantly, a deterministic approach to allow execution of the LLM responses either in the form of existing policies or plan operators. In this work, we propose LgTS (LLM-guided Teacher-Student learning), a novel approach that explores the planning abilities of LLMs to provide a graphical representation of the sub-goals to a reinforcement learning (RL) agent that does not have access to the transition dynamics of the environment. The RL agent uses Teacher-Student learning algorithm to learn a set of successful policies for reaching the goal state from the start state while simultaneously minimizing the number of environmental interactions. Unlike previous methods that utilize LLMs, our approach does not assume access to a fine-tuned LLM, nor does it require pre-trained policies that achieve the sub-goals proposed by the LLM. Through experiments on a gridworld based DoorKey domain and a search-and-rescue inspired domain, we show that a LLM-proposed graphical structure for sub-goals combined with a Teacher-Student RL algorithm achieves sample-efficient policies.},
+booktitle = {Proceedings of the 23rd International Conference on Autonomous Agents and Multiagent Systems},
+pages = {1736–1744},
+numpages = {9},
+keywords = {curriculum learning, large language models, reinforcement learning},
+location = {Auckland, New Zealand},
+series = {AAMAS '24}
+}
+
+@inproceedings{kambhampati_llms_2024,
+  title={Position: LLMs can’t plan, but can help planning in LLM-modulo frameworks},
+  author={Kambhampati, Subbarao and Valmeekam, Karthik and Guan, Lin and Verma, Mudit and Stechly, Kaya and Bhambri, Siddhant and Saldyt, Lucas Paul and Murthy, Anil B},
+  booktitle={Forty-first International Conference on Machine Learning},
+  year={2024}
+}
+
+@misc{gonzalez-santamarta_integration_2024,
+	title = {Integration of {Large} {Language} {Models} within {Cognitive} {Architectures} for {Autonomous} {Robots}},
+	url = {http://arxiv.org/abs/2309.14945},
+	doi = {10.48550/arXiv.2309.14945},
+	abstract = {Symbolic reasoning systems have been used in cognitive architectures to provide inference and planning capabilities. However, defining domains and problems has proven difficult and prone to errors. Moreover, Large Language Models (LLMs) have emerged as tools to process natural language for different tasks. In this paper, we propose the use of LLMs to tackle these problems. This way, this paper proposes the integration of LLMs in the ROS 2-integrated cognitive architecture MERLIN2 for autonomous robots. Specifically, we present the design, development and deployment of how to leverage the reasoning capabilities of LLMs inside the deliberative processes of MERLIN2. As a result, the deliberative system is updated from a PDDL-based planner system to a natural language planning system. This proposal is evaluated quantitatively and qualitatively, measuring the impact of incorporating the LLMs in the cognitive architecture. Results show that a classical approach achieves better performance but the proposed solution provides an enhanced interaction through natural language.},
+	language = {en},
+	urldate = {2024-12-02},
+	publisher = {arXiv},
+	author = {González-Santamarta, Miguel Á and Rodríguez-Lera, Francisco J. and Guerrero-Higueras, Ángel Manuel and Matellán-Olivera, Vicente},
+	month = mar,
+	year = {2024},
+	note = {arXiv:2309.14945 [cs]},
+	keywords = {Computer Science - Robotics},
+	annote = {Comment: 8 pages, 6 figures, 2 tables, Submitted to IROS 2024},
+	file = {González-Santamarta et al. - 2024 - Integration of Large Language Models within Cognit.pdf:/home/brennan/Zotero/storage/8MK7GZJB/González-Santamarta et al. - 2024 - Integration of Large Language Models within Cognit.pdf:application/pdf},
+}
+
+@article{singh_twostep_2024,
+  title={Twostep: Multi-agent task planning using classical planners and large language models},
+  author={Bai, David and Singh, Ishika and Traum, David and Thomason, Jesse},
+  journal={arXiv preprint arXiv:2403.17246},
+  year={2024}
+}
+
+
+
+@incollection{scheutzetal2018diarcchapter,
+  title={An Overview of the Distributed Integrated Affect and Reflection Cognitive DIARC Architecture},
+  author={Matthias Scheutz and Thomas Williams and Evan Krause and Brley Oosterveld and Vasanth Sarathy and Tyler Frasca},
+  year={2019},
+  booktitle={Cognitive Architectures},
+  publisher={Springer International Publishing},
+  series={Intelligent Systems, Control and Automation: Science and Engineering},
+  url={https://hrilab.tufts.edu/publications/scheutzetal2018diarcchapter.pdf}
+}
+
+@Misc{alkhazraji-et-al-zenodo2020,
+  author =       "Yusra Alkhazraji and Matthias Frorath and Markus Gr{\"u}tzner
+                  and Malte Helmert and Thomas Liebetraut and Robert Mattm{\"u}ller
+                  and Manuela Ortlieb and Jendrik Seipp and Tobias Springenberg and
+                  Philip Stahl and Jan W{\"u}lfing",
+  title =        "Pyperplan",
+  publisher =    "Zenodo",
+  year =         "2020",
+  doi =          "10.5281/zenodo.3700819",
+  url =          "https://doi.org/10.5281/zenodo.3700819",
+  howpublished = "\url{https://doi.org/10.5281/zenodo.3700819}"
+}
+
+@misc{daganDynamicPlanningLLM2023a,
+	title = {Dynamic {Planning} with a {LLM}},
+	url = {http://arxiv.org/abs/2308.06391},
+	doi = {10.48550/arXiv.2308.06391},
+	abstract = {While Large Language Models (LLMs) can solve many NLP tasks in zero-shot settings, applications involving embodied agents remain problematic. In particular, complex plans that require multi-step reasoning become difficult and too costly as the context window grows. Planning requires understanding the likely effects of one’s actions and identifying whether the current environment satisfies the goal state. While symbolic planners find optimal solutions quickly, they require a complete and accurate representation of the planning problem, severely limiting their use in practical scenarios. In contrast, modern LLMs cope with noisy observations and high levels of uncertainty when reasoning about a task. Our work presents LLM Dynamic Planner (LLM-DP): a neurosymbolic framework where an LLM works hand-in-hand with a traditional planner to solve an embodied task. Given action-descriptions, LLM-DP solves Alfworld faster and more efficiently than a naive LLM ReAct baseline.},
+	language = {en},
+	urldate = {2025-11-04},
+	publisher = {arXiv},
+	author = {Dagan, Gautier and Keller, Frank and Lascarides, Alex},
+	month = aug,
+	year = {2023},
+	note = {arXiv:2308.06391 [cs]},
+	keywords = {Computer Science - Robotics, Computer Science - Computation and Language},
+	file = {PDF:files/1198/Dagan et al. - 2023 - Dynamic Planning with a LLM.pdf:application/pdf},
+}
+
+@inproceedings{silverPDDLPLANNINGPRETRAINED2022,
+  title={Generalized planning in pddl domains with pretrained large language models},
+  author={Silver, Tom and Dan, Soham and Srinivas, Kavitha and Tenenbaum, Joshua B and Kaelbling, Leslie and Katz, Michael},
+  booktitle={Proceedings of the AAAI conference on artificial intelligence},
+  volume={38},
+  number={18},
+  pages={20256--20264},
+  year={2024}
+}
+
+
+@inproceedings{edelkampDirectedSymbolicExploration,
+  title={Directed symbolic exploration in AI-planning},
+  author={Edelkamp, Stefan},
+  booktitle={AAAI Spring Symposium on Model-Based Validation of Intelligence},
+  pages={84--92},
+  year={2001}
+}
+
+
+@article{cimattiConformantPlanningSymbolic2004,
+	title = {Conformant planning via symbolic model checking and heuristic search},
+	volume = {159},
+	copyright = {https://www.elsevier.com/tdm/userlicense/1.0/},
+	issn = {00043702},
+	url = {https://linkinghub.elsevier.com/retrieve/pii/S0004370204000803},
+	doi = {10.1016/j.artint.2004.05.003},
+	abstract = {In this paper we tackle the problem of Conformant Planning: ﬁnd a sequence of actions that guarantees goal achievement regardless of an uncertain initial condition and of nondeterministic action effects. Our approach, set in the framework of search in the belief space, is based on two main intuitions. First, symbolic model checking techniques, Binary Decision Diagrams in particular, can be used to represent and expand the search space, and to provide an efﬁcient computational platform. Second, driving the search solely with reachability information is not effective, and the notion of knowledge has to be taken explicitly into account.},
+	language = {en},
+	number = {1-2},
+	urldate = {2025-11-04},
+	journal = {Artificial Intelligence},
+	author = {Cimatti, A. and Roveri, M. and Bertoli, P.},
+	month = nov,
+	year = {2004},
+	pages = {127--206},
+	file = {PDF:files/1206/Cimatti et al. - 2004 - Conformant planning via symbolic model checking and heuristic search.pdf:application/pdf},
+}
+
+@article{helmertFastDownwardPlanning2006,
+  title={The fast downward planning system},
+  author={Helmert, Malte},
+  journal={Journal of Artificial Intelligence Research},
+  volume={26},
+  pages={191--246},
+  year={2006}
+}
+
+
+@article{hartFormalBasisHeuristic1968,
+	title = {A {Formal} {Basis} for the {Heuristic} {Determination} of {Minimum} {Cost} {Paths}},
+	volume = {4},
+	copyright = {https://ieeexplore.ieee.org/Xplorehelp/downloads/license-information/IEEE.html},
+	issn = {0536-1567},
+	url = {http://ieeexplore.ieee.org/document/4082128/},
+	doi = {10.1109/TSSC.1968.300136},
+	abstract = {Although the problem of determining the minimum cost path through a graph arises naturally in a number of interesting applications, there has been no underlying theory to guide the development of efficient search procedures. Moreover, there is no adequate conceptual framework within which the various ad hoc search strategies proposed to date can be compared. This paper describes how heuristic information from the problem domain can be incorporated into a formal mathematical theory of graph searching and demonstrates an optimality property of a class of search strategies.},
+	language = {en},
+	number = {2},
+	urldate = {2025-11-04},
+	journal = {IEEE Transactions on Systems Science and Cybernetics},
+	author = {Hart, Peter and Nilsson, Nils and Raphael, Bertram},
+	year = {1968},
+	pages = {100--107},
+	file = {PDF:files/1210/Hart et al. - 1968 - A Formal Basis for the Heuristic Determination of Minimum Cost Paths.pdf:application/pdf},
+}
+
+@article{unified_planning_softwarex2025,
+  title = {Unified Planning: Modeling, manipulating and solving AI planning problems in Python},
+  author = {Andrea Micheli and Arthur Bit-Monnot and Gabriele R{\"o}ger and Enrico Scala and Alessandro Valentini and Luca Framba and Alberto Rovetta and Alessandro Trapasso and Luigi Bonassi and Alfonso Emilio Gerevini and Luca Iocchi and Felix Ingrand and Uwe Köckemann and Fabio Patrizi and Alessandro Saetti and Ivan Serina and Sebastian Stock},
+  journal = {SoftwareX},
+  volume = {29},
+  pages = {102012},
+  year = {2025},
+  issn = {2352-7110},
+  doi = {https://doi.org/10.1016/j.softx.2024.102012},
+  url = {https://www.sciencedirect.com/science/article/pii/S2352711024003820},
+  abstract = {Automated planning is a branch of artificial intelligence aiming at finding a course of action that achieves specified goals, given a description of the initial state of a system and a model of possible actions. There are plenty of planning approaches working under different assumptions and with different features (e.g. classical, temporal, and numeric planning). When automated planning is used in practice, however, the set of required features is often initially unclear. The Unified Planning (UP) library addresses this issue by providing a feature-rich Python API for modeling automated planning problems, which are solved seamlessly by planning engines that specify the set of features they support. Once a problem is modeled, UP can automatically find engines that can solve it, based on the features used in the model. This greatly reduces the commitment to specific planning approaches and bridges the gap between planning technology and its users.}
+}
+
+@inproceedings{Pereira_Oren_Meneguzzi_2017,
+  title={Landmark-based heuristics for goal recognition},
+  author={Pereira, Ramon and Oren, Nir and Meneguzzi, Felipe},
+  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume={31},
+  number={1},
+  year={2017}
+}
+
+
+@article{IJRR17-khandelwal,
+title={BWIBots: A platform for bridging the gap between AI and human--robot interaction research},
+author={Piyush Khandelwal and Shiqi Zhang and Jivko Sinapov and Matteo Leonetti and Jesse Thomason and Fangkai Yang and Ilaria Gori and Maxwell Svetlik and Priyanka Khante and Vladimir Lifschitz and J. K. Aggarwal and Raymond Mooney and Peter Stone},
+journal={The International Journal of Robotics Research},
+url="http://www.cs.utexas.edu/users/ai-lab?khandelwal:ijrr17",
+year={2017}
+}
+
+@inproceedings{silver2024generalized,
+  author={Silver, Tom and Dan, Soham and Srinivas, Kavitha and Tenenbaum, Josh and Kaelbling, Leslie and Katz, Michael},
+  title={Generalized planning in {PDDL} domains with pretrained large language models},
+  booktitle = {AAAI Conference on Artificial Intelligence (AAAI)},
+  year      = {2024},
+}
+
+@article{valmeekam2023planbenchextensiblebenchmarkevaluating,
+  title={Planbench: An extensible benchmark for evaluating large language models on planning and reasoning about change},
+  author={Valmeekam, Karthik and Marquez, Matthew and Olmo, Alberto and Sreedharan, Sarath and Kambhampati, Subbarao},
+  journal={Advances in Neural Information Processing Systems},
+  volume={36},
+  pages={38975--38987},
+  year={2023}
+}
+
+
+@inproceedings{Ramrez2009PlanRA,
+  title={Plan recognition as planning},
+  author={Ram{\i}rez, Miquel and Geffner, Hector},
+  booktitle={Proceedings of the 21st international joint conference on Artifical intelligence. Morgan Kaufmann Publishers Inc},
+  pages={1778--1783},
+  year={2009}
+}
+
+@inproceedings{strips,
+author = {Fikes, Richard E. and Nilsson, Nils J.},
+title = {STRIPS: a new approach to the application of theorem proving to problem solving},
+year = {1971},
+publisher = {Morgan Kaufmann Publishers Inc.},
+address = {San Francisco, CA, USA},
+abstract = {We describe a new problem solver called STRIPS that attempts to find a sequence of operators in a space of world models to transform a given initial world model into a model in which a given goal formula can be proven to be true. STRIPS represents a world model as an arbi trary collection of first-order predicate calculus formulas and is designed to work with models consisting of large numbers of formulas. It employs a resolution theorem prover to answer (juestions of particular models and uses means-ends analysis to guide it to the desired goal-satisfying model.},
+booktitle = {Proceedings of the 2nd International Joint Conference on Artificial Intelligence},
+pages = {608–620},
+numpages = {13},
+keywords = {problem solving, robot planning heuristic search, theorem provirig},
+location = {London, England},
+series = {IJCAI'71}
+}
+
+@inproceedings{chen_are_2024,
+author = {Chen, Lingjiao and Davis, Jared and Hanin, Boris and Bailis, Peter and Stoica, Ion and Zaharia, Matei and Zou, James},
+title = {Are more LM calls all you need? towards the scaling properties of compound AI systems},
+year = {2024},
+isbn = {9798331314385},
+publisher = {Curran Associates Inc.},
+address = {Red Hook, NY, USA},
+abstract = {Many recent state-of-the-art results in language tasks were achieved using compound systems that perform multiple Language Model (LM) calls and aggregate their responses. However, there is little understanding of how the number of LM calls - e.g., when asking the LM to answer each question multiple times and taking a majority vote - affects such a compound system's performance. In this paper, we initiate the study of scaling properties of compound inference systems. We analyze, theoretically and empirically, how the number of LM calls affects the performance of Vote and Filter-Vote, two of the simplest compound system designs, which aggregate LM responses via majority voting, optionally applying LM filters. We find, surprisingly, that across multiple language tasks, the performance of both Vote and Filter-Vote can first increase but then decrease as a function of the number of LM calls. Our theoretical results suggest that this non-monotonicity is due to the diversity of query difficulties within a task: more LM calls lead to higher performance on "easy" queries, but lower performance on "hard" queries, and nonmonotone behavior can emerge when a task contains both types of queries. This insight then allows us to compute, from a small number of samples, the number of LM calls that maximizes system performance, and define an analytical scaling model for both systems. Experiments show that our scaling model can accurately predict the performance of Vote and Filter-Vote systems and thus find the optimal number of LM calls to make.},
+booktitle = {Proceedings of the 38th International Conference on Neural Information Processing Systems},
+articleno = {1455},
+numpages = {24},
+location = {Vancouver, BC, Canada},
+series = {NIPS '24}
+}
+
+@techreport{fikes1971monitored,
+  title={Monitored execution of robot plans produced by STRIPS},
+  author={Fikes, Richard E},
+  year={1971}
+}
+@article{aeronautiques1998pddl,
+  title={Pddl—the planning domain definition language},
+  author={Aeronautiques, Constructions and Howe, Adele and Knoblock, Craig and McDermott, ISI Drew and Ram, Ashwin and Veloso, Manuela and Weld, Daniel and Sri, David Wilkins and Barrett, Anthony and Christianson, Dave and others},
+  journal={Technical Report, Tech. Rep.},
+  year={1998}
+}
+
+@InProceedings{pmlr-v288-munoz-avila25a,
+  title = 	 {ChatHTN: Interleaving Approximate (LLM) and Symbolic HTN Planning},
+  author =       {Mu\~noz-Avila, H\'ector and Aha, David W. and Rizzo, Paola},
+  booktitle = 	 {Proceedings of the International Conference on Neuro-symbolic Systems},
+  pages = 	 {446--458},
+  year = 	 {2025},
+  editor = 	 {Pappas, George and Ravikumar, Pradeep and Seshia, Sanjit A.},
+  volume = 	 {288},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {28--30 May},
+  publisher =    {PMLR},
+  pdf = 	 {https://raw.githubusercontent.com/mlresearch/v288/main/assets/munoz-avila25a/munoz-avila25a.pdf},
+  url = 	 {https://proceedings.mlr.press/v288/munoz-avila25a.html},
+  abstract = 	 {We introduce ChatHTN, a Hierarchical Task Network (HTN) planner that combines symbolic HTN planning techniques with queries to ChatGPT to approximate solutions in the form of task decompositions. The resulting hierarchies interleave task decompositions generated by symbolic HTN planning with those generated by ChatGPT. Despite the approximate nature of the results generated by ChatGPT, ChatHTN is provably sound; any plan it generates correctly achieves the input tasks. We demonstrate this property with an open-source implementation of our system.}
+}
+
+@article{xu2025online,
+  title={Online Learning of HTN Methods for integrated LLM-HTN Planning},
+  author={Xu, Yuesheng and Munoz-Avila, Hector},
+  journal={arXiv preprint arXiv:2511.12901},
+  year={2025}
+}
