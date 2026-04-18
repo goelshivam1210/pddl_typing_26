@@ -1,1 +1,28 @@
 \section{Introduction}
+As open-world robotics grows to be more prevelant is it crucial to
+explore ways that robots can adapt to novelties. Recent work has
+focused on end-to-end learning systems where deep-learning models are
+responsible for processing sensory inputs and outputting physical
+actuations. These systems offer no gaurentees on safety or optimality,
+but may be more capable in a variety of dynamic tasks. On the other
+hand, traditional symbolic systems may offer safety and optimality
+gaurentees at the cost of being significantly less adaptable to
+environmental noveleties.
+
+Symbolic approaches require strict representations of robot
+affordances, and the objects which they can be applied to. Consider
+the task of erasing a white-board. if a task-critical object like an
+eraser is missing, a traditional symbolic planner would be unable to
+yield a solution. An end-to-end approach may still be able to solve
+this task by substituting an eraser with a comparable object like a
+tissue. However, given that large models are prone to hallucinations,
+it is also possible that an end-to-end approach would fail some
+percentage of the time.
+
+An important question moving forward is determining how to combine the
+desirable qualities from each approach --- the flexibility of
+deep-learning approaches and the determinstic nature of symbolic
+planning. In this work, we purpose using an LLM to dynamically type a
+symbolic problem at run time to add adaptability to novelties. We
+evaluate our approach in a variety of creative-problem tasks against
+an pre-existing LLM planning benchmark.

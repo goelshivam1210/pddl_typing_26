@@ -1,0 +1,44 @@
+\section{Related Works}
+\subsection{Creative Problem Solving}
+Creative problem solving can be described as a failure in an agents
+understanding of the world such that it is insufficient to complete a
+given task \cite{ijcai2023p777}. Existing literature has explored
+various approaches to this problem. In one line of work reinforcement
+learning (RL) is used to discover action primitaves after reaching an
+unrecoverable state \cite{rapid_learn, lorang_rsj_2024}. Gizzi et al.,
+propose a system that enumerates action-object combinations after
+reaching a failure case \cite{gizzi_ieee_2019}. Rather than learning
+entirely new action primitaves or having to test many different
+action-object pairs, our approach seeks to use an LLM to offer object
+substitions.
+
+\subsection{LLMs for Planning}
+The use of LLMs for symbolic planning has been widely explored, with
+mixed results. Silver et al. find that LLMs succeed on some symbolic
+planning tasks but fail on others
+\cite{silverPDDLPLANNINGPRETRAINED2022}, and subsequent benchmarking
+work has confirmed that LLMs do not reliably produce correct plans
+\citep{valmeekam_large_nodate,
+valmeekam2023planbenchextensiblebenchmarkevaluating}. Despite these
+limitations, LLMs have shown promise as components within larger
+planning pipelines rather than as end-to-end planners.
+
+One direction leverages LLMs for problem formulation and
+decomposition. Liu et al. use LLMs to generate PDDL problem files from
+natural language descriptions \citep{liu_llmp_2023}, while Singh et
+al. demonstrate that, in a two-agent setting, LLMs can decompose
+problems into simpler sub-tasks amenable to parallel execution
+\citep{singh_twostep_2024}. Researchers have similarly integrated LLMs
+into Hierarchical Task Networks to break high-level goals into more
+tractable sub-tasks \citep{pmlr-v288-munoz-avila25a, xu2025online}.
+
+A second direction uses LLM-generated outputs to guide or improve
+search and learning. Silver et al. propose treating an LLM-generated
+plan — even an incorrect one — as a heuristic to guide greedy
+best-first search \citep{silverPDDLPLANNINGPRETRAINED2022}, and Hazra
+et al. similarly incorporate heuristics to improve LLM-based planning
+\citep{hazra_saycanpay_2024}. Kambhampati et al. take a complementary
+approach, employing critics to evaluate and refine plans produced by
+LLMs \citep{kambhampati_llms_2024}. Researchers have also explored
+using LLMs' code generation capabilities to produce programs that
+solve specific tasks \citep{silver2024generalized}.

@@ -1,0 +1,43 @@
+\section{Experiments}
+\subsection{Environments}
+We have devised a custom task for experimentation named
+construction. A custom task was selected over a pre-existing ICL
+environments due to the fact that these tasks are solvable without the
+need for creative problem solving.
+
+The construction task consists of a single domain file that includes
+the actions `smash-cover`, `hit-nail`, `turn-bolt`, and
+`turn-screw`. These actions require various tools: `hammer`, `wrench`,
+and `screwdriver`.
+
+\subsection{Evaluation Framework}
+The accompanying problem files can be seperated into categories ---
+standard, bulk, no substitution, stress, and chained.
+
+The standard test case consists of a handful of tools and goal wherein
+the tool traditionally used to solve the goal is missing. For example,
+consider a problem where the agent needs to hammer in a loose nail but
+does not have hammer. In these standard problems one of the tools can
+be validly substituted as a hammer to solve the goal.
+
+The bulk test case is a modification of standard wherein the goal
+consists of multiple parts and thus requires multiple substititions.
+
+Chained problems require more steps to reach the goal.
+
+No substitution problems are impossible, wherein no substitution can
+be made to make the task solvable.
+
+Stress problems have many more tools available for substitution. This
+test is meant to explore how the LLM scales to more distractor tools.
+
+We have also devised an experiment to test how the LLMs adjust to
+different environment semantics. The problem files for this experiment
+are based on the stress test case. For each problem, we use an Claude
+Sonnet 4.6 to substitute tools, and other objects, with synonyms.
+
+\subsection{Prompt Iteration}
+LLMs were used to refine the prompts {...}
+
+\subsection{Experiment Details}
+Pyperplan was used, is not state of the art but since we are not evaluating performance that is ok {...}

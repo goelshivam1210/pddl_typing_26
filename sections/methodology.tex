@@ -1,0 +1,96 @@
+\section{Methodology}
+
+\begin{wrapfigure}{r}{0.5\textwidth}
+  \vspace{0pt}
+
+  \rule{\linewidth}{0.8pt}
+  \vspace{-19pt} \captionof{algorithm}{\small{Consensus Semantic
+      Typing}} \label{alg:consensus-typing}
+  \vspace{-8pt} \rule{\linewidth}{0.4pt}
+  \begin{algorithmic}[1]
+    \footnotesize
+
+    \Require domain $D$, problem $P=\langle O,I,G\rangle$, LLM,
+    planner, number of queries $q$, prompt $\rho_T$
+
+    \State $\mathcal{S} \gets [\,]$
+
+    \For{$i = 1$ to $q$} \State
+    $\mathcal{S}.\mathrm{append}(LLM(D, P, \rho_T))$ \EndFor
+
+    \State $\tau^* \gets \mathrm{MajorityVote}(\mathcal{S})$
+    \Comment{$\mathrm{argmax}$ per object}
+
+    \State $A_o \gets [t \mid \mathrm{votes}(o,t) > 0]$ sorted by
+    $\downarrow$ votes
+    \State $\mathcal{U} \gets [(o,\, A_o) \mid o \in O,\; |A_o| > 1]$ sorted
+    by $\uparrow$ confidence$(o)$
+
+    \For{each $(o, A_o) \in \mathcal{U}$} \For{each $t \in A_o$}
+    \State $\tau' \gets \tau^*$ with $o \mapsto t$ \State
+    $\mathcal{P} \gets Planner(D, P|_{\tau'})$
+    \If{$\mathcal{P} \neq \emptyset$} \State \Return $\mathcal{P}$
+    \EndIf \EndFor \EndFor
+
+    \State \Return $\emptyset$
+  \end{algorithmic}
+
+  \rule{\linewidth}{0.8pt}
+  \vspace{5pt}
+  \end{wrapfigure}
+
+  \begin{wrapfigure}{r}{0.5\textwidth}
+    \vspace{0pt}
+
+    \rule{\linewidth}{0.8pt}
+    \vspace{-19pt} \captionof{algorithm}{\small{Iterative
+        Planner-Feedback Typing}} \label{alg:iterative}
+    \vspace{-8pt} \rule{\linewidth}{0.4pt}
+  \begin{algorithmic}[1]
+    \footnotesize
+
+    \Require domain $D$, problem $P=\langle O,I,G\rangle$, LLM,
+    planner, max iterations $T$, prompt $\rho_T$
+
+    \State $f \gets \texttt{null}$ \Comment{no feedback on first call}
+
+    \For{$t = 1$ to $T$} \State $C_t \gets LLM(D, P, \rho_T, f)$
+    \State $\mathcal{P} \gets Planner(D, P|_{C_t})$
+    \If{$\mathcal{P} \neq \emptyset$} \State \Return $\mathcal{P}$
+    \EndIf \If{$t < T$} \State
+    $f \gets \mathrm{PlannerFeedback}(C_t,\, t,\, T)$ \EndIf \EndFor
+
+    \State \Return $\emptyset$
+  \end{algorithmic}
+
+  \rule{\linewidth}{0.8pt}
+  \vspace{5pt}
+  \end{wrapfigure}
+
+
+  \begin{wrapfigure}{r}{0.5\textwidth}
+    \vspace{0pt}
+
+    \rule{\linewidth}{0.8pt}
+    \vspace{-19pt} \captionof{algorithm}{\small{LLM-Judge Iterative
+        Typing}} \label{alg:judge}
+    \vspace{-8pt} \rule{\linewidth}{0.4pt}
+  \begin{algorithmic}[1]
+    \footnotesize
+
+    \Require domain $D$, problem $P=\langle O,I,G\rangle$, LLM, Judge,
+    planner, max iterations $T$, prompts $\rho_T,\rho_J$
+
+    \State $f \gets \texttt{null}$ \Comment{no feedback on first call}
+
+    \For{$t = 1$ to $T$} \State $C_t \gets LLM(D, P, \rho_T, f)$
+    \State $J_t \gets Judge(D, P, C_t, \rho_J)$
+    \If{$J_t.\mathrm{approved}$} \State \textbf{break} \EndIf \State
+    $f \gets J_t.\mathrm{feedback}$ \EndFor
+
+    \State \Return $Planner(D, P|_{C_t})$
+  \end{algorithmic}
+
+  \rule{\linewidth}{0.8pt}
+  \vspace{5pt}
+  \end{wrapfigure}

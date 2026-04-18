@@ -1,6 +1,8 @@
 # macOS
 .DS_Store
 
+auto/
+
 # VS Code workspace settings
 .vscode/
 
