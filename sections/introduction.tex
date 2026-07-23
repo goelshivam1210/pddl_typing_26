@@ -1,28 +1,123 @@
+\begin{figure*}
+  \centering
+  \includegraphics[width=1\textwidth]{figures/robot_example.png}
+  \caption{\small{Architectural depiction of LLM typing pipeline. Shows the running example of robot facing a novel task. Given the goal, erase the blackboard, the robot must take into account the objects available to it. These objects do not include a dry erase marker, and instead require the robot to use the cloth to wipe the board.}}
+    \label{fig:robot_example}
+\end{figure*}
+
 \section{Introduction}
-As open-world robotics grows to be more prevelant is it crucial to
-explore ways that robots can adapt to novelties. Recent work has
-focused on end-to-end learning systems where deep-learning models are
-responsible for processing sensory inputs and outputting physical
-actuations. These systems offer no gaurentees on safety or optimality,
-but may be more capable in a variety of dynamic tasks. On the other
-hand, traditional symbolic systems may offer safety and optimality
-gaurentees at the cost of being significantly less adaptable to
-environmental noveleties.
+\label{sec:intro}
+Robots deployed in open-world environments must operate under conditions that
+cannot be fully anticipated at design time~\cite{wray2025requirements}. Expected tools may be missing,
+unfamiliar objects may be present, and the available resources may support ways
+of completing a task that were not encoded in advance. Reliable autonomy
+therefore requires some capacity to adapt to the current environment without
+giving up the structure and predictability needed to understand and verify the
+robot's behavior.
 
-Symbolic approaches require strict representations of robot
-affordances, and the objects which they can be applied to. Consider
-the task of erasing a white-board. if a task-critical object like an
-eraser is missing, a traditional symbolic planner would be unable to
-yield a solution. An end-to-end approach may still be able to solve
-this task by substituting an eraser with a comparable object like a
-tissue. However, given that large models are prone to hallucinations,
-it is also possible that an end-to-end approach would fail some
-percentage of the time.
+Symbolic task planners provide this structure by reasoning over explicit models
+of objects, actions, and their effects \cite{mcdermott1998pddl}. However, their
+ability to find a plan depends on the environment being represented in the
+planner's predefined vocabulary. A runtime perception system may recognize
+objects such as a \texttt{cloth}, \texttt{cup}, and \texttt{marker}, while the
+planning domain defines actions over functional types such as
+\texttt{eraser}, \texttt{container}, and \texttt{writing-tool}. When no
+available object is assigned the type required by an action, planning fails
+even when an object in the environment could fulfill the required role.
 
-An important question moving forward is determining how to combine the
-desirable qualities from each approach --- the flexibility of
-deep-learning approaches and the determinstic nature of symbolic
-planning. In this work, we purpose using an LLM to dynamically type a
-symbolic problem at run time to add adaptability to novelties. We
-evaluate our approach in a variety of creative-problem tasks against
-an pre-existing LLM planning benchmark.
+% Classic task planner provide systematic search and formal criteria for plan validity once the world has been expressed in a symbolic planning language such as PDDL~\cite{mcdermott1998pddl}. In open worlds, however, constructing this representation is itself a substantial challenge. A runtime perception
+% system may recognize objects such as a \texttt{cloth}, \texttt{cup}, and
+% \texttt{marker}, while the planning domain defines actions over functional
+% types such as \texttt{eraser}, \texttt{container}, and \texttt{writing-tool}.
+% When no perceived object is assigned the type required by an action, grounding
+% excludes that action and planning fails---even when an available object could
+% fulfill the required role. In such cases, the environment contains a solution,
+% but the symbolic problem does not represent it.
+
+Consider a robot asked to clean a whiteboard when no conventional eraser is
+present. A cloth may provide the required wiping function, but a typed planner
+cannot use it if the cloth is represented only as a generic graspable object.
+We call this mismatch between the available objects and the goal-relevant type
+requirements of the planning domain a \emph{typing gap}. Typing gaps can arise
+when problem instances are generated from open-vocabulary perception, when
+object annotations are incomplete, or when a hand-authored object-to-type
+mapping cannot anticipate every functionally appropriate object that may be
+encountered at runtime. Resolving such a gap does not necessarily require
+inventing a new action or changing the task. It may be sufficient to recognize
+that an available object can instantiate an existing symbolic role.
+
+In this work, we focus on one bounded form of such adaptation: determining
+whether an object already present in the environment can fulfill a functional
+role required by one of the robot's existing skills. We do not expand the
+robot's action repertoire or relax the task. Instead, we revise how available
+objects are typed so that the symbolic planner can consider functionally
+appropriate alternatives.
+
+Large language models provide semantic knowledge that can support functional
+substitution, but remain unreliable as end-to-end generators of symbolic plans~\cite{valmeekam2023planbenchextensiblebenchmarkevaluating, Stein_Fišer_Hoffmann_Koller_2025}. We therefore position the
+LLM upstream of the planner, using it to adapt the symbolic representation
+rather than to generate actions.
+
+We introduce CAST, \textbf{C}onstrained \textbf{A}ssignment of \textbf{S}ymbolic \textbf{T}ypes, which uses an
+LLM to assign available objects to types already defined in the planning
+domain. The resulting problem is then passed to an off-the-shelf symbolic
+planner, which remains responsible for generating the final plan. This
+separation allows the system to benefit from the LLM's semantic knowledge while
+retaining the structure of symbolic planning.
+
+We investigate three CAST variants: consensus voting, iterative refinement,
+and judge-based selection, and evaluate their ability to recover valid plans,
+refuse problems for which no suitable substitute exists, and manage inference
+costs. Across multiple problem configurations and semantic variations, CAST
+substantially outperforms an end-to-end LLM planning baseline on tasks requiring
+functional substitution. We additionally demonstrate the complete pipeline on
+a physical robot.
+
+The contributions of this work are:
+\begin{itemize}
+    \item CAST, a framework for resolving runtime typing gaps by combining
+    LLM-based semantic type assignment with symbolic planning;
+
+    \item three querying strategies that expose different trade-offs among plan
+    recovery, refusal, and inference cost; and
+
+    \item an evaluation across solvable and unsolvable substitution problems,
+    together with a physical-robot demonstration.
+\end{itemize}
+
+
+% \section{Introduction}
+
+% Classic task planner provide systematic search and formal criteria for plan validity once the world has been expressed in a symbolic planning language such as PDDL~\cite{mcdermott1998pddl}. In open worlds, however, 
+
+% Robots are increasingly moving beyond controlled laboratory settings into open-world environments. In these settings, they must contend with environmental novelties, including unexpected objects, missing tools, and previously unseen task configurations. Adapting to such novelty is essential for reliable long-horizon autonomy. However, adaptation alone is insufficient: deployable robotic systems must also remain explainable and verifiable so that their behavior can be trusted and their decisions understood~\cite{jones2026requirements, wray2025requirements}.
+
+% Symbolic task planners provide strong guarantees of soundness and completeness, making them attractive for trustworthy robot autonomy. However, these guarantees rely on closed-world assumptions in which object types, predicates, and actions are fully specified. Consequently, planning fails whenever required object types are unavailable, even if functionally equivalent alternatives exist in the environment. 
+% Recent work has sought to address this limitation using large language models (LLMs). Methods such as AutoPlanBench ~\cite{Stein_Fišer_Hoffmann_Koller_2025} generate plans directly from symbolic task descriptions, leveraging the semantic knowledge encoded in LLMs to improve flexibility. However, because the learned model is responsible for producing the final plan, hallucinations and reasoning errors directly affect execution, resulting in plans that may be invalid, unsafe, or unverifiable.
+
+% Consider a robot instructed to erase a whiteboard. A symbolic planner expects an object of type \texttt{eraser}, but none is present in the environment. Although a cloth or tissue could fulfill the same functional role, the planner cannot infer this substitution because the object types are fixed in the planning domain. Conversely, an LLM may correctly recognize a cloth as a substitute, but it may also incorrectly suggest an object such as a brick. Effective adaptation therefore requires a mechanism that can leverage semantic knowledge while rejecting invalid substitutions and preserving the guarantees of symbolic planning.
+
+% Rather than placing the LLM in charge of generating the final plan, we position it upstream of the symbolic planner. We propose \textsc{CAST} (Constrained Assignment of Symbolic Types), a framework that leverages an LLM to dynamically assign symbolic types to objects at runtime, bridging the gap between the objects available in the environment and the type requirements of the planning domain. By restricting the LLM to modifying the symbolic problem representation rather than generating actions directly, \textsc{CAST} preserves the symbolic planner as the sole plan-generation component. Consequently, every generated plan remains subject to the planner's soundness and completeness guarantees while benefiting from the LLM's semantic knowledge to resolve environmental novelty. We evaluate three querying strategies—consensus voting, iterative refinement, and judge-based selection—across two open-weight models, measuring their ability to identify valid substitutions and appropriately refuse tasks for which no suitable substitute exists. We further compare \textsc{CAST} against AutoPlanBench, an existing LLM-based planning benchmark.
+
+% The contributions of this work are threefold:
+% We introduce CAST, a framework for runtime symbolic type assignment that enables symbolic planners to adapt to missing object types.
+% We investigate three LLM querying strategies and evaluate their ability to both identify valid substitutions and appropriately refuse impossible substitutions.
+% We compare CAST against AutoPlanBench across multiple domains and demonstrate that separating semantic adaptation from symbolic planning substantially improves planning robustness while preserving planner guarantees.
+
+% Symbolic planners offer soundness and completeness guarantees, but are rigid by design: they assume closed-world representations of objects and the actions that apply to them, and fail outright when a required object type is absent. Approaches that include generative models trade these guarantees for flexibility. These systems include LLM-as-planner methods such as AutoPlanBench~\cite{Stein_Fišer_Hoffmann_Koller_2025} that generate plans directly from PDDL. They introduce flexibility through approximation, but because the learned component produces the plan itself, its failures propagate directly into the output: hallucination and flawed reasoning can lead to unsafe and incorrect plans with no guarantee of validity.
+
+% Consider the task of erasing a whiteboard, where at deployment time, the agent has no access to an eraser-typed object. In this situation, if a functionally equivalent object such as a cloth is present in the environment, the agent should be able to update its representation to substitute, without causing any issues 
+
+% If no \texttt{eraser}-typed object is present in the problem definition, a symbolic planner cannot yield a solution --- even when a functionally equivalent substitute, such as a cloth or tissue, might be available in the environment. For example, an incompatible object such as a brick could be selected by an LLM, producing a plan that is unsafe or simply wrong.
+% Using an LLM trained on a large-scale internet data, this information can easily be captured. However, the LLMs risk the verifiability, and are prone to hallucinations. 
+% Adapting to novelties therefore demands not only proposing substitutions, but also refusing them when no valid option exists.
+
+% Rather than placing the LLM component in charge of generating a final plan, we place it upstream of the planner. We propose \textsc{CAST} (Constrained Assignment of Symbolic Types), which leverages an LLM to dynamically assign types to objects at runtime, resolving the gap between the available objects and the type requirements of a symbolic planner. Because the LLM only shapes the representation the planner consumes, and does not generate the plan, we realize the flexibility of a learned approach without sacrificing the planner's completeness guarantees. We evaluate three querying strategies (consensus voting, iterative refinement, and judge-based selection) across two open-weight models, benchmarking their ability to correctly resolve object substitutions and appropriately refuse problems for which no valid substitute exists. We further compare against AutoPlanBench, an existing LLM-based planning benchmark.
+
+% Our results show that typing-based approaches significantly outperform the LLM-based planning baseline on problems requiring substitution. We benchmark across problems of varying complexity and semantic variation, demonstrating robustness to differences in object naming across domains. We further find that the choice of querying strategy introduces a trade-off: approaches that maximize successful plan generation on solvable problems tend to be more willing to produce plans even when no valid substitute exists, while more conservative strategies are better at declining to plan altogether.
+
+
+
+% On the other spectrum, completely relyung on an LLM as a planning repair syste,
+% Simply because the object cannot be classified as that type on-the-fly. 
+% A learned system may recognize this substitution, but large models are prone to hallucination: for example, an incompatible object such as a brick could be selected by an LLM, producing a plan xthat is unsafe or simply wrong.

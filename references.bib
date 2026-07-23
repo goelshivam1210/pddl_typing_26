@@ -155,14 +155,12 @@ series = {AAMAS '24}
 	file = {PDF:files/1198/Dagan et al. - 2023 - Dynamic Planning with a LLM.pdf:application/pdf},
 }
 
-@inproceedings{silverPDDLPLANNINGPRETRAINED2022,
-  title={Generalized planning in pddl domains with pretrained large language models},
-  author={Silver, Tom and Dan, Soham and Srinivas, Kavitha and Tenenbaum, Joshua B and Kaelbling, Leslie and Katz, Michael},
-  booktitle={Proceedings of the AAAI conference on artificial intelligence},
-  volume={38},
-  number={18},
-  pages={20256--20264},
-  year={2024}
+@inproceedings{silver2022pddl,
+  title={{PDDL} Planning with Pretrained Large Language Models},
+  author={Silver, Tom and Hariprasad, Varun and Shuttleworth, Reece S and Kumar, Nishanth and Lozano-P{\'e}rez, Tom{\'a}s and Kaelbling, Leslie Pack},
+  booktitle={NeurIPS 2022 Foundation Models for Decision Making Workshop},
+  year={2022},
+  url={https://openreview.net/forum?id=1QMMUB4zfl}
 }
 
 
@@ -254,10 +252,13 @@ year={2017}
 }
 
 @inproceedings{silver2024generalized,
-  author={Silver, Tom and Dan, Soham and Srinivas, Kavitha and Tenenbaum, Josh and Kaelbling, Leslie and Katz, Michael},
-  title={Generalized planning in {PDDL} domains with pretrained large language models},
-  booktitle = {AAAI Conference on Artificial Intelligence (AAAI)},
-  year      = {2024},
+  title={Generalized Planning in {PDDL} Domains with Pretrained Large Language Models},
+  author={Silver, Tom and Dan, Soham and Srinivas, Kavitha and Tenenbaum, Joshua B and Kaelbling, Leslie and Katz, Michael},
+  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume={38},
+  number={18},
+  pages={20256--20264},
+  year={2024}
 }
 
 @article{valmeekam2023planbenchextensiblebenchmarkevaluating,
@@ -388,3 +389,203 @@ doi = {10.1109/ICDL53763.2022.9962230}
   pages={228-233},
   keywords={Robots;Problem-solving;Knowledge based systems;Animals;Creativity;Planning;Task analysis},
   doi={10.1109/DEVLRN.2019.8850711}}
+
+@article{kumar2026open,
+  title={Open-World Task and Motion Planning Via Vision-Language Model Generated Constraints},
+  author={Kumar, Nishanth and Shen, William and Ramos, Fabio and Fox, Dieter and Lozano-P{\'e}rez, Tom{\'a}s and Kaelbling, Leslie Pack and Garrett, Caelan Reed},
+  journal={IEEE Robotics and Automation Letters},
+  year={2026},
+  publisher={IEEE}
+}
+
+@article{Stein_Fišer_Hoffmann_Koller_2025, title={Automating the Generation of Prompts for LLM-based Action Choice in PDDL Planning}, volume={35}, url={https://ojs.aaai.org/index.php/ICAPS/article/view/36126}, DOI={10.1609/icaps.v35i1.36126}, abstractNote={Large language models (LLMs) have revolutionized a large variety of NLP tasks. An active debate is to what extent they can do reasoning and planning. Prior work has assessed the latter in the specific context of PDDL planning, based on manually converting three PDDL domains into natural language (NL) prompts. Here we automate this conversion step, showing how to leverage an LLM to automatically generate NL prompts from PDDL input. Our automatically generated NL prompts result in similar LLM-planning performance as the previous manually generated ones. Beyond this, the automation enables us to run much larger experiments, providing for the first time a broad evaluation of LLM planning performance in PDDL. Our NL prompts yield better performance than PDDL prompts and simple template-based NL prompts. Compared to symbolic planners, LLM planning lags far behind; but in some domains, our best LLM configuration scales up further than A* using LM-cut.}, number={1}, journal={Proceedings of the International Conference on Automated Planning and Scheduling}, author={Stein, Katharina and Fišer, Daniel and Hoffmann, Jörg and Koller, Alexander}, year={2025}, month={Sep.}, pages={250–259} }
+
+@article{fikes1971strips,
+  title={STRIPS: A new approach to the application of theorem proving to problem solving},
+  author={Fikes, Richard E and Nilsson, Nils J},
+  journal={Artificial intelligence},
+  volume={2},
+  number={3-4},
+  pages={189--208},
+  year={1971},
+  publisher={Elsevier}
+}
+
+@techreport{mcdermott1998pddl,
+  title={{PDDL} -- The Planning Domain Definition Language},
+  author={McDermott, Drew and Ghallab, Malik and Howe, Adele and Knoblock, Craig and Ram, Ashwin and Veloso, Manuela and Weld, Daniel and Wilkins, David},
+  institution={Yale Center for Computational Vision and Control},
+  number={TR-98-003},
+  year={1998}
+}
+
+@article{argenziano2024empowerembodiedmultiroleopenvocabulary,
+        title={EMPOWER: Embodied Multi-role Open-vocabulary Planning with Online Grounding and Execution}, 
+        author={Francesco Argenziano and Michele Brienza and Vincenzo Suriani and Daniele Nardi and Domenico D. Bloisi},
+        year={2024},
+        eprint={2408.17379},
+        archivePrefix={arXiv},
+        primaryClass={cs.RO},
+        url={https://arxiv.org/abs/2408.17379}, }
+
+
+
+@article{musumeci2025context,
+  title         = {Context Matters! Relaxing Goals with {LLM}s for
+                   Feasible 3D Scene Planning},
+  author        = {Musumeci, Emanuele and
+                   Brienza, Michele and
+                   Argenziano, Francesco and
+                   Drid, Abdel Hakim and
+                   Suriani, Vincenzo and
+                   Nardi, Daniele and
+                   Bloisi, Domenico D.},
+  journal       = {arXiv preprint arXiv:2506.15828},
+  year          = {2025},
+  eprint        = {2506.15828},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.RO},
+  doi           = {10.48550/arXiv.2506.15828},
+  url           = {https://arxiv.org/abs/2506.15828}
+}
+
+@misc{yang2026skillwrappergenerativepredicateinvention,
+      title={SkillWrapper: Generative Predicate Invention for Task-level Robot Planning}, 
+      author={Ziyi Yang and Benned Hedegaard and Ahmed Jaafar and Yichen Wei and Skye Thompson and Shreyas S. Raman and Haotian Fu and Stefanie Tellex and George Konidaris and David Paulius and Naman Shah},
+      year={2026},
+      eprint={2511.18203},
+      archivePrefix={arXiv},
+      primaryClass={cs.RO},
+      url={https://arxiv.org/abs/2511.18203}, 
+}
+
+@inproceedings{stretch,
+  title={The Design of Stretch: A Compact, Lightweight Mobile Manipulator for Indoor Human Environments},
+  author={Kemp, Charles C. and Edsinger, Aaron and Clever, Henry M. and Matulevich, Blaine},
+  booktitle={2022 International Conference on Robotics and Automation (ICRA)},
+  pages={3150--3157},
+  year={2022},
+  organization={IEEE},
+  url={https://arxiv.org/abs/2109.10892}
+}
+
+@article{sam,
+  title={SAM 2: Segment Anything in Images and Videos},
+  author={Ravi, Nikhila and Gabeur, Valentin and Hu, Yuan-Ting and Hu, Ronghang and Ryali, Chaitanya and Ma, Tengyu and Khedr, Haitham and R{\"a}dle, Roman and Rolland, Chloe and Gustafson, Laura and Mintun, Eric and Pan, Junting and Alwala, Kalyan Vasudev and Carion, Nicolas and Wu, Chao-Yuan and Girshick, Ross and Doll{\'a}r, Piotr and Feichtenhofer, Christoph},
+  journal={arXiv preprint arXiv:2408.00714},
+  url={https://arxiv.org/abs/2408.00714},
+  year={2024}
+}
+
+@misc{gdino,
+  title={{Grounding DINO}: Marrying {DINO} with Grounded Pre-Training for Open-Set Object Detection},
+  author={Liu, Shilong and Zeng, Zhaoyang and Ren, Tianhe and Li, Feng and Zhang, Hao and Yang, Jie and Jiang, Qing and Li, Chunyuan and Yang, Jianwei and Su, Hang and Zhu, Jun and Zhang, Lei},
+  year={2023},
+  eprint={2303.05499},
+  archivePrefix={arXiv},
+  primaryClass={cs.CV},
+  url={https://arxiv.org/abs/2303.05499},
+}
+
+@inproceedings{jones2026requirements,
+  title={Requirements for Aligned, Dynamic Resolution of Conflicts in Operational Constraints},
+  author={Jones, Steven J and Wray, Robert E and Laird, John E},
+  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume={40},
+  number={44},
+  pages={37481--37490},
+  year={2026}
+}
+
+@inproceedings{wray2025requirements,
+  title={Requirements for Recognition and Rapid Response to Unfamiliar Events Outside of Agent Design Scope},
+  author={Wray, Robert E and Jones, Steven J and Laird, John E},
+  booktitle={International Conference on Artificial General Intelligence},
+  pages={299--311},
+  year={2025},
+  organization={Springer}
+}
+
+@inproceedings{gizzi2022toward,
+  title={Toward Life-Long Creative Problem Solving: Using World Models for Increased Performance in Novelty Resolution.},
+  author={Gizzi, Evana and Lin, Wo Wei and Castro, Mateo Guaman and Harvey, Ethan and Sinapov, Jivko},
+  booktitle={ICCC},
+  pages={121--125},
+  year={2022}
+}
+
+@inproceedings{nair2024creative,
+  title={Creative Problem Solving in Large Language and Vision Models-What Would it Take?},
+  author={Nair, Lakshmi and Gizzi, Evana and Sinapov, Jivko},
+  booktitle={Findings of the Association for Computational Linguistics: EMNLP 2024},
+  pages={11978--11994},
+  year={2024}
+}
+
+@article{ye2026uniplan,
+  title={Uniplan: Vision-language task planning for mobile manipulation with unified pddl formulation},
+  author={Ye, Haoming and Xiao, Yunxiao and Lu, Cewu and Cai, Panpan},
+  journal={arXiv preprint arXiv:2602.08537},
+  year={2026}
+}
+
+@inproceedings{bercher2025modelrepair,
+  title     = {A Survey on Model Repair in AI Planning},
+  author    = {Bercher, Pascal and Sreedharan, Sarath and Vallati, Mauro},
+  booktitle = {Proceedings of the Thirty-Fourth International Joint Conference on
+               Artificial Intelligence, {IJCAI-25}},
+  publisher = {International Joint Conferences on Artificial Intelligence Organization},
+  editor    = {James Kwok},
+  pages     = {10371--10380},
+  year      = {2025},
+  month     = {8},
+  note      = {Survey Track},
+  doi       = {10.24963/ijcai.2025/1152},
+  url       = {https://doi.org/10.24963/ijcai.2025/1152},
+}
+
+
+@inproceedings{gragera2023exploring,
+  title={Exploring the Limitations of using Large Language Models to Fix Planning Tasks},
+  author={Gragera, Alba and Pozanco, Alberto},
+  booktitle={ICAPS 2023 Workshop on Knowledge Engineering for Planning and Scheduling (KEPS)},
+  year={2023}
+}
+
+@article{gragera2023repair, 
+title={A Planning Approach to Repair Domains with Incomplete Action Effects}, 
+volume={33}, url={https://ojs.aaai.org/index.php/ICAPS/article/view/27190}, 
+DOI={10.1609/icaps.v33i1.27190}, 
+abstractNote={Automated planning is a problem solving technique for a wide range of scenarios and goals, which typically involves the creation of domain and problem files in formal languages. However, producing complete model descriptions can be challenging and time-consuming, especially for non-experts. Although many tools have been developed to support file editing, mistakes can still be made, such as incomplete or improper specification of the initial state or the set of actions. These errors often result in unsolvable tasks for planners, making it impossible to generate a plan. Explaining the absence of a solution in such cases is essential to support humans in the development of automated planning tasks. In this paper, we introduce a novel approach to repair planning models where the effects of some actions are incomplete, without further information from the user side. We propose a compilation of the unsolvable task to a new extended planning task, in which new actions are permitted to insert possible missing effects. The solution is a plan that achieves the goals of the original problem while also alerting users of the modifications made to do so. Experimental results demonstrate that this approach can effectively repair incomplete planning domains.}, 
+number={1}, 
+journal={Proceedings of the International Conference on Automated Planning and Scheduling}, author={Gragera, Alba and Fuentetaja, Raquel and García-Olaya, Ángel and Fernández, Fernando}, year={2023}, 
+month={Jul.}, 
+pages={153–161} }
+
+
+@inproceedings{chen2024lasp,
+  title     = {Language-Augmented Symbolic Planner for Open-World
+               Task Planning},
+  author    = {Chen, Guanqi and
+               Yang, Lei and
+               Jia, Ruixing and
+               Hu, Zhe and
+               Chen, Yizhou and
+               Zhang, Wei and
+               Wang, Wenping and
+               Pan, Jia},
+  booktitle = {Robotics: Science and Systems},
+  year      = {2024},
+  url       = {https://chenguanqi.github.io/LASP/}
+}
+
+@article{motwani2026longcot,
+  title     = {LongCoT: Benchmarking Long-Horizon
+               Chain-of-Thought Reasoning},
+  author    = {Motwani, Sumeet Ramesh and Nichols, Daniel and London, Charles and Li, Peggy and Pizzati, Fabio and Blake, Acer and Hammoud, Hasan and McDonald, Tavish and Naik, Akshat and Ivanova, Alesia and Baskaran, Vignesh and Laptev, Ivan and Glatt, Ruben and Ben-Nun, Tal and Torr, Philip and Jaques, Natasha and Prabhu, Ameya and Bartoldson, Brian and Kailkhura, Bhavya and Schroeder de Witt, Christian},
+  year      = {2026},
+  eprint    = {2604.14140},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url       = {https://arxiv.org/abs/2604.14140}
+}

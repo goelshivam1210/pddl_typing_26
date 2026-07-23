@@ -1,43 +1,62 @@
 \section{Experiments}
 \subsection{Environments}
 We have devised a custom task for experimentation named
-construction. A custom task was selected over a pre-existing ICL
-environments due to the fact that these tasks are solvable without the
-need for creative problem solving.
+construction. A custom task was selected over a pre-existing
+environments due to the fact that these standard planning benchmarks are designed to be solvable without the need for creative problem solving.
 
-The construction task consists of a single domain file that includes
-the actions `smash-cover`, `hit-nail`, `turn-bolt`, and
-`turn-screw`. These actions require various tools: `hammer`, `wrench`,
-and `screwdriver`.
+  The construction task consists of a single domain file that includes
+  the actions \texttt{smash-cover}, \texttt{hit-nail}, \texttt{turn-bolt}, and
+  \texttt{turn-screw}. These actions operate on three fastener types ---
+  \texttt{nail}, \texttt{bolt}, and \texttt{screw} --- and require corresponding
+  tools: \texttt{hammer}, \texttt{wrench}, and \texttt{screwdriver}.
 
-\subsection{Evaluation Framework}
-The accompanying problem files can be seperated into categories ---
-standard, bulk, no substitution, stress, and chained.
+\subsection{Evaluation Framework}                                                                                              
+  The accompanying problem files can be separated into categories ---  standard, bulk, chained, no substitution, and stress. 
 
-The standard test case consists of a handful of tools and goal wherein
-the tool traditionally used to solve the goal is missing. For example,
-consider a problem where the agent needs to hammer in a loose nail but
-does not have hammer. In these standard problems one of the tools can
-be validly substituted as a hammer to solve the goal.
+\begin{itemize}
+\item \textbf{Standard} -- A handful of tools and a goal where the
+  tool traditionally used to solve the goal is missing. One of the
+  available tools can be validly substituted to solve the goal (e.g.,
+  substituting a tool as a hammer to drive in a loose
+  nail). \textbf{RQ1:} Can the LLM correctly identify a valid tool
+  substitution when the canonical tool is absent?
+\item \textbf{Multiple-goals} -- A modification of standard where the goal
+  consists of multiple parts, requiring multiple
+  substitutions. \textbf{RQ2:} Does substitution accuracy degrade as
+  the number of simultaneous goals increases?
+\item \textbf{No Substitution} -- Impossible problems where no valid
+  substitution exists among the available tools, rendering the task
+  unsolvable. \textbf{RQ4:} Does the LLM avoid false positives when no
+  valid substitution exists?
+\item \textbf{Stress} -- A modification of standard with many
+  additional distractor tools, designed to test how the LLM scales
+  when reasoning over a larger set of objects. \textbf{RQ5:} How does
+  substitution accuracy scale as the number of distractor objects
+  grows?
+\end{itemize}
 
-The bulk test case is a modification of standard wherein the goal
-consists of multiple parts and thus requires multiple substititions.
+A final, additional experiment was run to explore how variations in
+task semantics affect substitution accuracy. A synonym variant of the
+construction domain was created by prompting Claude Sonnet 4.6 to
+generate structurally equivalent but semantically different replacements for
+both the problem and domain PDDL representations. For example, one semantic variation is based on a medic task where the actions and objects are medically themed, whereas another theming resolves around cooking in a kitchen task. \textbf{RQ6:} Does substitution accuracy change when familiar
+object names   replaced with semantically equivalent but less
+intuitive synonyms?
 
-Chained problems require more steps to reach the goal.
+All problems are accompanied by hand annotated lists of valid substitutions --- this is to ensure that the LLM does assign unreasonable types. For example: a napkin cannot be reasonably used to hammer in a nail. The final output of the planner is checked against both a state machine that acts as a sort of simulator  and against this substitution manifest to make sure that outputted plans are valid. 
 
-No substitution problems are impossible, wherein no substitution can
-be made to make the task solvable.
+We compare our proposed system against AutoPlanBench (APB) \cite{Stein_Fišer_Hoffmann_Koller_2025}. Comparing our approach against a traditional symbolic planner would not be possible, as without outside augmentation, the benchmark tasks are not solvable. APB was selected as it uses an LLM, and thus does not strictly require valid PDDL. Unlike the neuro-symbolic presented approach, APB is an end-to-end planning system that uses the LLM to generate the final plan. 
 
-Stress problems have many more tools available for substitution. This
-test is meant to explore how the LLM scales to more distractor tools.
+\subsubsection{Prompt Iteration}
+Claude 4.6 Sonnet was used to iteratively refine the prompts used for evaluation. Provided with a base prompt, Claude was given access to a script that allowed it to query the smaller LLMs used for evaluation. It was instructed to make modifications to the prompt to improve substitution accuracy. Claude was instructed not to make the prompts task agnostic as not to include any domain-specific hints. The final prompt underwent a manual review by the authors.
 
-We have also devised an experiment to test how the LLMs adjust to
-different environment semantics. The problem files for this experiment
-are based on the stress test case. For each problem, we use an Claude
-Sonnet 4.6 to substitute tools, and other objects, with synonyms.
-
-\subsection{Prompt Iteration}
-LLMs were used to refine the prompts {...}
+\subsubsection{NL Encoding}
+Token use is both expensive and time consuming, as such an effort was made to reduce usage. Rather than using the raw PDDL encoding in the prompt, which contains a lot of boilerplate, a NL parser was used to compress the symbolic representation. Measured across all evaluation problem instances, this reduces prompt size by an average of $9.5\%$.
 
 \subsection{Experiment Details}
-Pyperplan was used, is not state of the art but since we are not evaluating performance that is ok {...}
+Robots may be forced to operate in service denied environments. Due to this fact, we have limited our evaluation models to single GPU, open-weight models that can be ran on the edge. Specifically, Deepseek R1 32B (DS) and Gemma 4 31B (G4) are used for evaluations. Using more than one model that is roughly the same size allows us to make comparisons between them. Both models include strong reasoning capabilities, with Gemma 4 allowing reasoning to be toggled. This provides an opportunity to compare both the accuracy and the token usage of the same model with and without thinking enabled (G4NT).
+
+Pyperplan was used as the planning engine for experimentation \cite{alkhazraji-et-al-zenodo2020}. While Pyperplan's performance is not state of the art, our results do not take into account planner speed. Pyperplan was selected as it is written in  Python, making it easy to integrate with the rest of our codebase. All of the code used for experimentation is available on GitHub\footnote{Redacted For Review}.
+
+Experiments were ran using an Nvidia A100, 8 CPU cores, and
+96GB of RAM. Each experiment was ran 15 times, and the results were averaged.

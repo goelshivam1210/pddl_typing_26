@@ -1,0 +1,35 @@
+% - PDDL problems can have mistakes in them. Plan repair literature for example looks at invalid PDDL and attempts to repair it (symbolically). Maybe human error introduced a typing gap or perhaps we were generating the problem at run time from an open vocabulary system like DINO, the reason does not really matter, there are different ways to end up with a typing gap.
+
+% - Domain files for open world PDDL can be thought of in a way as something provided from the factory --- all of the actions that robot is capable of and the type of objects these actions can be applied to can be enumerated (of course this would be hard to enumerate, thus why we are talking about composition). This means we assume these actions and types are given to us.
+
+% - Our job is to close the gap, we have a problem that is not solvable due to a typing gap so we ask an LLM to retype objects such that the typing gap is closed.
+
+% - It is important to consider cases where the typing gap cannot be closed - no valid substitute is available. We want to fail gracefully.
+
+% - Typing needs to be done with respect to the goal --- for example an object being blue is irrelevant if we are concerned with a different property such as friction. Thus this is hard to do symbolically, but as humans we are good at it.
+
+% - Our example problems have hand annotated ground truth files --- that is we enumerate valid substitutions to ensure that the LLM is not assigning a brick to be used in place of a cloth. 
+
+% - APB (and solutions that have the LLM generate a final plan in general) are not exactly a direct comparison to this approach. Because they use LLMs and are thus less rigid, they just happen to be willing willing to solve typing gaps. 
+
+
+
+% 
+\begin{abstract} 
+
+Symbolic planners provide systematic search and formal guarantees, but their applicability depends on the environment being expressed in the planner's predefined vocabulary. In open-world settings, a robot may perceive an object that can fulfill a required functional role without that object being assigned the corresponding symbolic type. The resulting \emph{typing gap} can make a task appear unsolvable even when a suitable physical substitute is available. We introduce CAST (Constrained Assignment of Symbolic Types), a neuro-symbolic framework that uses a large language model (LLM) to assign available objects to existing symbolic types at runtime. CAST restricts the LLM to modifying the object-to-type assignment while leaving the rest of the planning instance unchanged. We evaluate CAST using three LLM-querying strategies with open-weight models on problems requiring single and simultaneous substitutions, robustness to distractors and semantic variations, and refusal when no valid substitute exists. The typing-based methods substantially outperform an end-to-end LLM planning baseline on solvable substitution problems. Our results also expose a recovery--refusal trade-off: iterative refinement provides strong plan recovery at low token cost, whereas consensus and judge-based strategies more reliably reject semantically invalid substitutions. Finally, a physical-robot deployment demonstrates that CAST composes with an open-vocabulary perception-to-planning pipeline.
+
+% IN novelty scenarios, when an agent cannot solve the task using a rigid representation -- however rigid representation offer verifiability. 
+% Typing in planning domains is method to define types to objects 
+% Robots operating in open-world environments must robustly adapt to novel situations, such as unexpected objects and missing tools, while also maintaining verifiability for enabling trust.
+% Symbolic planners provide soundness and completeness guarantees but typically rely on closed-world representations of objects and actions. Moreover, they are handcrafted by an expert, and that might not be able to enumerate all the situations apriori. If an agent encounters a novel situation, it must 
+
+% Consequently, when an object of a required type is absent, planning fails outright, even if a functionally equivalent substitute is available in the environment. Approaches that leverage generative models are more flexible, but due to  hallucination and flawed reasoning capabilities lead to unsafe or invalid plans. 
+% We instead present \textsc{CAST} (Constrained Assignment of Symbolic Types), which positions an LLM \emph{upstream} of the planner, using it to resolve such \textit{typing gaps} at runtime by recognizing functional equivalences between the available objects and the types the planner requires, while the sound planner still produces every plan. 
+% Consider a robot tasked with cleaning a whiteboard: a standard planner would fail if no \texttt{eraser}-typed object is present, even when a \texttt{cloth} could serve the same role. Our approach retypes the cloth so the planner can proceed, preserving its completeness guarantees. We propose three LLM querying strategies (consensus voting, iterative refinement, and judge-based selection) and evaluate them across two open-weight models, with and without chain-of-thought reasoning, against an LLM-based planning baseline, benchmarking their ability to correctly resolve typing gaps and appropriately refuse unsolvable problems. Typing-based approaches substantially outperform the baseline on problems requiring substitution, while revealing a trade-off between willingness to generate plans and correctly declining when no valid substitute exists.
+
+\end{abstract}
+% 
+
+%  what if the cloth is not usable -- what if the cloth is a different material.
+%  would the method be able to resolve it? -- what if the cloth is 

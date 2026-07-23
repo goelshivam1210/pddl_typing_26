@@ -1,0 +1,47 @@
+% ============================================================
+% CAST notation
+% Requires: \usepackage{amsmath,amssymb}
+% ============================================================
+
+% Planning domain
+\newcommand{\Domain}{D}
+\newcommand{\Predicates}{\mathcal{P}}
+\newcommand{\ActionSchemas}{\mathcal{A}}
+\newcommand{\Types}{\mathcal{T}}
+\newcommand{\subtype}{\sqsubseteq}
+
+% Problem instance
+\newcommand{\Problem}{\Pi}
+\newcommand{\Objects}{O}
+\newcommand{\TypeAssign}{\sigma}
+\newcommand{\CandidateAssign}{\hat{\sigma}}
+\newcommand{\Initial}{I}
+\newcommand{\Goal}{G}
+\newcommand{\GoalStates}{S_G}
+
+% Ground representations
+\newcommand{\GroundAtoms}[1]{\mathcal{F}_{#1}}
+\newcommand{\GroundActions}[1]{\mathcal{A}^{g}_{#1}}
+
+% Actions
+\newcommand{\Parameters}{\mathrm{par}}
+\newcommand{\Pre}{\mathrm{pre}}
+\newcommand{\Add}{\mathrm{add}}
+\newcommand{\Del}{\mathrm{del}}
+
+% State transition and plans
+\newcommand{\Transition}{\gamma}
+\newcommand{\Plan}{\rho}
+\newcommand{\PlanSet}{\mathrm{Plans}}
+
+% Type repair
+\newcommand{\RepairedProblem}[1]{\Problem|_{#1}}
+\newcommand{\Admissible}{\mathrm{Adm}}
+\newcommand{\SemValid}{\mathrm{SemValid}}
+
+% LLM components
+\newcommand{\TypingPrompt}{\varphi_T}
+\newcommand{\JudgePrompt}{\varphi_J}
+\newcommand{\LLM}{\mathsf{LLM}}
+\newcommand{\Judge}{\mathsf{Judge}}
+\newcommand{\Planner}{\mathsf{Planner}}
