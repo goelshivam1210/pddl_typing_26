@@ -3,7 +3,7 @@
 In this section we present three LLM querying strategies for resolving typing gaps at runtime, each representing different trade-offs between token cost, flexibility, and robustness. All three approaches share a common structure: given an untyped or partially typed PDDL problem, an LLM is queried to assign types to available objects, and the resulting typed problem is passed to a symbolic planner. They differ in how the LLM is queried, how feedback is incorporated, and how disagreement is resolved.
 
 \subsection{Consensus Based Typing}
-The consensus-based approach exploits the stochastic nature of LLMs: repeated queries over the same prompt may yield distinct type assignments. By querying the LLM $q$ times, we build a distribution of votes over mappings between each object $o$ and candidate types $\tau \in \mathcal{T}$.
+The consensus-based approach exploits the stochastic nature of LLMs: repeated queries over the same prompt may yield distinct type assignments. By querying the LLM $q$ times, we build a distribution of votes over mappings between each object $o$ and candidate types $\tau \in \mathcal{T}$. We evaluate $q \in \{1, 3, 5\}$. The $q{=}1$ case issues a single query with no voting or relaxation and acts as a baseline that isolates the contribution of consensus aggregation from the underlying single-shot accuracy of the model.
 
 Algorithm~\ref{alg:consensus-typing} formalises this approach. The LLM generates $q$ candidate assignments $\hat{\sigma}$, from which a majority-vote assignment $\hat{\tau}$ is derived by selecting the most-voted type per object. The planner is first attempted under $\hat{\tau}$; if a plan is found, we terminate. Otherwise, for each object with type disagreement across queries, we substitute alternative types one object at a time, keeping all others at their majority type, in order of ascending confidence, attempting the planner after each substitution. We return the first plan found, or $\emptyset$ if no substitution yields a solution. This recovery explores only single-object relaxations of the majority assignment; problems that require several objects to be simultaneously re-typed beyond the majority vote --- as arise when a goal demands multiple distinct substitutions --- may therefore be missed, a limitation reflected in the bulk results.
 
@@ -38,59 +38,38 @@ Algorithm~\ref{alg:consensus-typing} formalises this approach. The LLM generates
   \end{algorithmic}
 \end{algorithm}
 
-\subsection{Iterative Typing}
-While consensus-based typing always issues exactly $q$ queries, iterative typing (Algorithm~\ref{alg:iterative}) can succeed in as few as one. Under this approach, the LLM is queried once for a type assignment $\hat{\sigma}$ and the planner is invoked. Upon failure, the LLM is re-queried with feedback and given the opportunity to revise its proposal. This feedback loop is the key distinction from consensus: rather than aggregating independent samples, the LLM is guided toward a valid assignment through re-querying. The procedure repeats for at most $T$ iterations, returning the first plan found or $\emptyset$ if none is found within the budget.
+\subsection{Iterative and Judge Typing}
+Unlike consensus, which always issues exactly $q$ queries, the iterative and judge strategies (Algorithm~\ref{alg:iterative-judge}) both re-query the LLM with feedback and can succeed in as few as one query, repeating for at most $T$ iterations. They differ only in what validates a proposed assignment $\hat{\sigma}$. \emph{Iterative} typing invokes the planner directly: on failure it re-queries the LLM with feedback and returns the first plan found, or $\emptyset$ within the budget. \emph{Judge} typing instead interposes a judge LLM call --- which may reuse the same model with a different prompt $\rho_J$ --- that evaluates $\hat{\sigma}$ semantically before any planning; if approved the planner is invoked, otherwise the judge's feedback drives refinement. The distinction is where the loop is closed: iterative is guided by planner failure, whereas judge filters semantically poor assignments before planning is attempted at all.
 
-The content of the feedback passed to the LLM is flexible. In the simplest case, a boolean signal indicating only that the planner failed may be used. In our implementation, we attempt to provide richer feedback including the previous queries object-to-type assignments along with the fact the planner has failure. The LLM is instructed to reconsider $\hat{\sigma}$.
-
-\begin{algorithm}
-  \caption{Iterative Typing}
-  \label{alg:iterative}
-  \begin{algorithmic}[1]
-    \footnotesize
-    \Require domain $D$, problem $P=\langle O,I,G\rangle$, LLM, planner, max iterations $T$, prompt $\rho_T$
-    
-    \State $f \gets \texttt{null}$ \Comment{no feedback on first call}
-    
-    \For{$t = 1$ to $T$} 
-      \State $\hat{\sigma} \gets LLM(D, P, \rho_T, f)$
-      \State $\mathcal{P} \gets Planner(D, P|_{\hat{\sigma}})$
-      \If{$\mathcal{P} \neq \emptyset$} 
-        \State \Return $\mathcal{P}$
-      \EndIf 
-      \If{$t < T$} 
-        \State $f \gets \mathrm{PlannerFeedback}(\hat{\sigma},\, t,\, T)$ 
-      \EndIf 
-    \EndFor
-    
-    \State \Return $\emptyset$
-  \end{algorithmic}
-\end{algorithm}
-
-\subsection{Judge Typing}
-Like iterative typing, judge-based typing (Algorithm~\ref{alg:judge}) can succeed in as few as one query. Rather than invoking the planner directly on the LLM's proposed assignment $\hat{\sigma}$, a judge LLM call --- which may use the same model with a different prompt $\rho_J$ --- first evaluates the assignment semantically. If approved, the planner is invoked; otherwise the judge's feedback is passed back to the LLM for refinement. This distinguishes it from iterative typing, where feedback is driven by planner failure: here, semantically poor assignments are filtered before planning is attempted at all.
-
-The judge is prompted to reason at a high level about the proposed $\hat{\sigma}$, evaluating whether goal-relevant objects are correctly typed and whether the assignment is likely to yield a solvable problem. The procedure runs for at most $T$ iterations; if no assignment is approved within budget, the planner is attempted on the final proposal as a fallback.
-
+The feedback content is flexible. For iterative typing it may be as simple as a boolean planner-failure signal; our implementation returns the previous object-to-type assignments alongside the failure and instructs the LLM to reconsider $\hat{\sigma}$. The judge is prompted to reason at a high level about whether goal-relevant objects are correctly typed and whether the assignment is likely solvable; if none is approved within budget, the planner is run on the final proposal as a fallback.
 
 \begin{algorithm}
-  \caption{LLM-Judge Typing}
-  \label{alg:judge}
+  \caption{Iterative / Judge Typing}
+  \label{alg:iterative-judge}
   \begin{algorithmic}[1]
     \footnotesize
-    \Require domain $D$, problem $P=\langle O,I,G\rangle$, LLM, Judge, planner, max iterations $T$, prompts $\rho_T,\rho_J$
-    
+    \Require domain $D$, problem $P=\langle O,I,G\rangle$, LLM, planner, max iterations $T$, prompt $\rho_T$; judge mode also uses Judge and prompt $\rho_J$
+
     \State $f \gets \texttt{null}$ \Comment{no feedback on first call}
-    
-    \For{$t = 1$ to $T$} 
+
+    \For{$t = 1$ to $T$}
       \State $\hat{\sigma} \gets LLM(D, P, \rho_T, f)$
-      \State $j_t \gets Judge(D, P, \hat{\sigma}, \rho_J)$
-      \If{$j_t.\mathrm{approved}$} 
-        \State \textbf{break} 
-      \EndIf 
-      \State $f \gets j_t.\mathrm{feedback}$ 
+      \If{\textbf{judge mode}}
+        \State $j \gets Judge(D, P, \hat{\sigma}, \rho_J)$
+        \If{$j.\mathrm{approved}$} \textbf{break} \Comment{plan below}
+        \EndIf
+        \State $f \gets j.\mathrm{feedback}$
+      \Else \Comment{iterative mode}
+        \State $\mathcal{P} \gets Planner(D, P|_{\hat{\sigma}})$
+        \If{$\mathcal{P} \neq \emptyset$} \Return $\mathcal{P}$ \Comment{solved}
+        \EndIf
+        \State $f \gets \mathrm{PlannerFeedback}(\hat{\sigma},\, t,\, T)$
+      \EndIf
     \EndFor
-    
-    \State \Return $Planner(D, P|_{\hat{\sigma}})$
+
+    \If{\textbf{judge mode}}
+      \State \Return $Planner(D, P|_{\hat{\sigma}})$ \Comment{plan on final $\hat{\sigma}$}
+    \EndIf
+    \State \Return $\emptyset$ \Comment{iterative: no plan within budget}
   \end{algorithmic}
 \end{algorithm}

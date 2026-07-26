@@ -109,11 +109,70 @@
 % articles, conjunctions, and prepositions are lower case unless they
 % directly follow a colon or long dash
 \title{CAST: Constrained Assignment of Symbolic Types \\ for Online Model Repair in Planning }
+\author{Anonymous Submission}
+\affiliations{}
 % \usepackage[disable,colorinlistoftodos]{todonotes} % uncomment for diabling
 \newcommand{\BMK}[1]{\todo[inline,color=cyan!25]{BMK: #1}}
 \newcommand{\SG}[1]{\todo[inline,color=yellow!25]{SG: #1}}
 \newcommand{\JS}[1]{\todo[inline,color=red!25]{JS: #1}}
 
+% ============================================================
+% CAST pipeline figure (Fig. 1) -- native TikZ rendering
+% ============================================================
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,fit,backgrounds,calc}
+
+% palette
+\definecolor{pkw}{RGB}{28,90,168}      % define / domain / problem
+\definecolor{psec}{RGB}{140,55,150}    % :types :objects :init :goal ...
+\definecolor{ptype}{RGB}{18,132,80}    % LLM-assigned functional types
+\definecolor{panelbg}{RGB}{248,249,251}
+\definecolor{panelrule}{RGB}{205,210,218}
+\definecolor{hdrbg}{RGB}{233,238,245}
+\definecolor{stagebg}{RGB}{252,252,253}
+\definecolor{stagerule}{RGB}{120,128,140}
+\definecolor{accent}{RGB}{40,70,120}
+
+% PDDL as a listings language
+\lstdefinelanguage{PDDL}{
+  alsoletter={:-_},
+  morekeywords={define,domain,problem},
+  morekeywords=[2]{:requirements,:strips,:typing,:types,:objects,:init,:goal,:domain},
+  sensitive=true,
+}
+\lstdefinestyle{pddl}{
+  language=PDDL,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\color{pkw}\bfseries,
+  keywordstyle=[2]\color{psec}\bfseries,
+  numbers=none,
+  showstringspaces=false,
+  columns=fullflexible,
+  keepspaces=true,
+  aboveskip=0pt,belowskip=0pt,xleftmargin=2pt,
+}
+% typed-problem variant: highlight the functional types the LLM assigns
+\lstdefinestyle{pddltyped}{style=pddl,
+  emph={robot,graspable,whiteboard},
+  emphstyle={\color{ptype}\bfseries},
+}
+
+\newsavebox\pddlDomA
+\newsavebox\pddlProbU
+\newsavebox\pddlDomB
+\newsavebox\pddlProbT
+\newlength\panelw   % common width for all code panels (set in the figure)
+
+% a titled code panel: #1 = header text, #2 = saved code box
+\newcommand{\pddlpanel}[2]{%
+  \begin{tikzpicture}[inner sep=0pt]
+    \node[fill=hdrbg,rounded corners=2pt,inner xsep=6pt,inner ysep=2pt,
+          font=\scriptsize\bfseries,text=accent] (h) {#1};
+    \node[below=1.2pt of h.south west,anchor=north west,
+          fill=panelbg,draw=panelrule,rounded corners=2pt,inner sep=4pt]
+          {\makebox[\panelw][l]{#2}};
+  \end{tikzpicture}%
+}
 
 \begin{document}
 
@@ -131,5 +190,8 @@
 \input{sections/conclusion}
 
 \bibliography{references}
+
+\appendix
+\input{sections/appendix}
 
 \end{document}

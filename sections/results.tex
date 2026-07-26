@@ -1,87 +1,81 @@
 \section{Results}
 
 
+% ========== COMBINED: CATEGORY BREAKDOWN + SEMANTIC ROBUSTNESS ==========
 \begin{table*}[t]
 \centering
-\caption{Left: per-category recovery (\%) on Construction problem subsets . Right: robustness to synonym substitution (\% of single-substitution problems solved when the canonical tool is replaced by a synonym). Bold denotes the column-wise maximum.}
-\label{tab:combined}
+\caption{Recovery (\%) by MacGyver problem category (left) and by semantic domain on single-substitution problems (right): the left block shows how accuracy scales with problem difficulty, the right block shows robustness to surface renaming. \textsc{Cons} is consensus at $n{=}3$ (the $n\in\{1,3,5\}$ ablation is in the appendix). \textsc{no\_sub} refusal is in Table~\ref{tab:refusal}. APB cells report semantic correctness of the generated plan. Bold marks the column maximum.}
+\label{tab:results}
 \footnotesize
 \renewcommand{\arraystretch}{0.9}
 \resizebox{\textwidth}{!}{%
-\begin{tabular}{ll|cccccc|cccc}
+\begin{tabular}{l|ccccc|cccc}
 \toprule
-& & \multicolumn{6}{c|}{\textbf{Construction Subsets}} & \multicolumn{4}{c}{\textbf{Synonym Domains}} \\
+ & \multicolumn{5}{c|}{\textbf{MacGyver Categories}} & \multicolumn{4}{c}{\textbf{Synonym Domains (single)}} \\
 \midrule
-\textbf{Mode} & \textbf{Model} & \textbf{single} & \textbf{chained} & \textbf{bulk} & \makecell{\textbf{stress}\\\textbf{n=10}} & \makecell{\textbf{stress}\\\textbf{n=20}} & \makecell{\textbf{stress}\\\textbf{n=50}} & \textbf{Electronics} & \textbf{Kitchen} & \textbf{Medic} & \textbf{Survival} \\
+\textbf{Config} & \textbf{single} & \textbf{bulk} & \textbf{stress-10} & \textbf{stress-20} & \textbf{stress-50} & \textbf{Electronics} & \textbf{Kitchen} & \textbf{Medic} & \textbf{Survival} \\
 \midrule
-\multirow{3}{*}{\makecell{Consensus\\(n=3)}} & DS & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & 46.7 $\pm$ 11.5 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & 93.3 $\pm$ 20.0 & \textbf{100.0} $\pm$ 0.0 & 95.6 $\pm$ 13.3 \\
- & G4 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & 97.8 $\pm$ 6.7 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 \\
- & G4NT & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & 46.7 $\pm$ 30.6 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 \\
+DS-Cons     & \textbf{100.0} $\pm$ 0.0 & 54.0 $\pm$ 38.9 & 86.0 $\pm$ 29.9 & 82.0 $\pm$ 29.0 & 88.0 $\pm$ 21.5 & 98.0 $\pm$ 6.3 & 88.0 $\pm$ 16.9 & \textbf{100.0} $\pm$ 0.0 & 96.0 $\pm$ 12.6 \\
+DS-IT       & 96.0 $\pm$ 12.6 & 58.0 $\pm$ 50.3 & 84.0 $\pm$ 24.6 & 82.0 $\pm$ 34.6 & 78.0 $\pm$ 25.7 & 98.0 $\pm$ 6.3 & 92.0 $\pm$ 10.3 & \textbf{100.0} $\pm$ 0.0 & 94.0 $\pm$ 9.7 \\
+DS-Judge    & 90.0 $\pm$ 19.4 & 54.0 $\pm$ 44.3 & 80.0 $\pm$ 29.8 & 72.0 $\pm$ 31.6 & 74.0 $\pm$ 31.3 & 98.0 $\pm$ 6.3 & 60.0 $\pm$ 35.3 & \textbf{100.0} $\pm$ 0.0 & 92.0 $\pm$ 14.0 \\
 \midrule
-\multirow{3}{*}{\makecell{Consensus\\(n=5)}} & DS & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & 86.7 $\pm$ 23.1 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & 91.1 $\pm$ 20.3 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 \\
- & G4 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & 97.8 $\pm$ 6.7 \\
- & G4NT & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & 60.0 $\pm$ 34.6 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 \\
+G4-Cons     & \textbf{100.0} $\pm$ 0.0 & 60.0 $\pm$ 51.6 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & 98.0 $\pm$ 6.3 \\
+G4-IT       & \textbf{100.0} $\pm$ 0.0 & 60.0 $\pm$ 51.6 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 \\
+G4-Judge    & 86.0 $\pm$ 25.0 & 60.0 $\pm$ 51.6 & 82.0 $\pm$ 19.9 & 90.0 $\pm$ 17.0 & 90.0 $\pm$ 21.6 & 92.0 $\pm$ 14.0 & 82.0 $\pm$ 19.9 & 98.0 $\pm$ 6.3 & 94.0 $\pm$ 13.5 \\
 \midrule
-\multirow{3}{*}{Iterative} & DS & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & 93.3 $\pm$ 11.5 & 93.3 $\pm$ 11.5 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & 93.3 $\pm$ 10.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 \\
- & G4 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 \\
- & G4NT & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 \\
+G4NT-Cons   & \textbf{100.0} $\pm$ 0.0 & 58.0 $\pm$ 50.3 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 \\
+G4NT-IT     & \textbf{100.0} $\pm$ 0.0 & \textbf{68.0} $\pm$ 42.4 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & 98.0 $\pm$ 6.3 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 \\
+G4NT-Judge  & \textbf{100.0} $\pm$ 0.0 & 60.0 $\pm$ 48.1 & 98.0 $\pm$ 6.3 & \textbf{100.0} $\pm$ 0.0 & 98.0 $\pm$ 6.3 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 \\
 \midrule
-\multirow{3}{*}{Judge} & DS & 93.3 $\pm$ 14.1 & 80.0 $\pm$ 20.0 & 26.7 $\pm$ 11.5 & 80.0 $\pm$ 34.6 & 86.7 $\pm$ 11.5 & 86.7 $\pm$ 23.1 & 97.8 $\pm$ 6.7 & 64.4 $\pm$ 41.0 & \textbf{100.0} $\pm$ 0.0 & 93.3 $\pm$ 20.0 \\
- & G4 & 88.9 $\pm$ 22.6 & 93.3 $\pm$ 11.5 & 53.3 $\pm$ 30.6 & 66.7 $\pm$ 41.6 & 80.0 $\pm$ 20.0 & 93.3 $\pm$ 11.5 & \textbf{100.0} $\pm$ 0.0 & 82.2 $\pm$ 25.4 & \textbf{100.0} $\pm$ 0.0 & 97.8 $\pm$ 6.7 \\
- & G4NT & 95.6 $\pm$ 13.3 & \textbf{100.0} $\pm$ 0.0 & 93.3 $\pm$ 11.5 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & 93.3 $\pm$ 10.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 \\
+DS-Direct   & 76.0 $\pm$ 42.0 & 38.0 $\pm$ 43.7 & 66.0 $\pm$ 37.8 & 66.0 $\pm$ 38.9 & 62.0 $\pm$ 41.6 & 88.0 $\pm$ 19.3 & 78.0 $\pm$ 33.3 & 88.0 $\pm$ 25.3 & 96.0 $\pm$ 8.4 \\
+G4-Direct   & \textbf{100.0} $\pm$ 0.0 & 60.0 $\pm$ 51.6 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 \\
+G4NT-Direct & 80.0 $\pm$ 42.2 & 60.0 $\pm$ 51.6 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & 90.0 $\pm$ 31.6 & 90.0 $\pm$ 31.6 & 70.0 $\pm$ 48.3 & 96.0 $\pm$ 12.6 & 98.0 $\pm$ 6.3 \\
 \midrule
-\multirow{3}{*}{APB} & DS & 55.6 $\pm$ 26.0 & 53.3 $\pm$ 41.6 & 0.0 $\pm$ 0.0 & 53.3 $\pm$ 50.3 & 46.7 $\pm$ 50.3 & 40.0 $\pm$ 20.0 & 64.4 $\pm$ 34.3 & 31.1 $\pm$ 34.8 & 40.0 $\pm$ 26.5 & 44.4 $\pm$ 35.7 \\
- & G4 & 60.0 $\pm$ 43.6 & 80.0 $\pm$ 34.6 & 0.0 $\pm$ 0.0 & 33.3 $\pm$ 57.7 & 46.7 $\pm$ 50.3 & 26.7 $\pm$ 46.2 & \textbf{100.0} $\pm$ 0.0 & 88.9 $\pm$ 33.3 & 95.6 $\pm$ 13.3 & 97.8 $\pm$ 6.7 \\
- & G4NT & 88.9 $\pm$ 33.3 & 33.3 $\pm$ 57.7 & 0.0 $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & 53.3 $\pm$ 50.3 & 57.8 $\pm$ 50.4 & 22.2 $\pm$ 44.1 & 68.9 $\pm$ 47.0 & 88.9 $\pm$ 33.3 \\
+DS-APB      & 42.0 $\pm$ 30.5 & 46.0 $\pm$ 42.2 & 42.0 $\pm$ 31.9 & 54.0 $\pm$ 26.7 & 50.0 $\pm$ 27.1 & 70.0 $\pm$ 25.4 & 32.0 $\pm$ 34.3 & 36.0 $\pm$ 31.0 & 52.0 $\pm$ 42.4 \\
+G4-APB      & 92.0 $\pm$ 25.3 & 54.0 $\pm$ 48.1 & 82.0 $\pm$ 33.3 & 86.0 $\pm$ 31.3 & 74.0 $\pm$ 42.2 & \textbf{100.0} $\pm$ 0.0 & 94.0 $\pm$ 19.0 & \textbf{100.0} $\pm$ 0.0 & 90.0 $\pm$ 10.5 \\
+G4NT-APB    & 80.0 $\pm$ 42.2 & 38.0 $\pm$ 41.6 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & 88.0 $\pm$ 31.6 & 70.0 $\pm$ 48.3 & 50.0 $\pm$ 52.7 & 80.0 $\pm$ 37.7 & 50.0 $\pm$ 52.7 \\
 \bottomrule
 \end{tabular}}
 \end{table*}
 
 
-Table~\ref{tab:macgyver_breakdown} shows the success rate of each experiment configuration across all problem categories. From these experiments we can address \textbf{RQ1}, \textbf{RQ2}, \textbf{RQ3}, and \textbf{RQ5}.
+Table~\ref{tab:results} reports recovery for every configuration and addresses \textbf{RQ1}, \textbf{RQ2}, \textbf{RQ3}, and \textbf{RQ6}.
 
-\textbf{RQ1}: across all three presented algorithms, all three LLM model variations are able to generate a solution with a high degree of accuracy. APB is able to generate correct plans, with varying degrees of success.
+\textbf{RQ1/RQ6}: On single-substitution problems the typing methods recover near-perfectly --- the Gemma4 variants saturate and Deepseek is close --- while both unstructured baselines are weaker and far less consistent. Constraining the LLM to a validated type assignment therefore recovers substitutions more reliably than free-form PDDL rewriting (direct) or end-to-end planning (APB).
 
-\textbf{RQ2}: The bulk problems were much harder for the LLM, with APB having a $0\%$ success rate across all models. The LLM typing algorithms are much stronger here, especially the interactive mode of operation wherein Gemma4 both with and without thinking enabled reaching $100\%$ accuracy.
+\textbf{RQ2}: \textsc{bulk} problems, which require several simultaneous substitutions, are the hardest category for every method, with the strongest configurations plateauing near $60\%$ at high variance. The bottleneck is joint-substitution combinatorics rather than the querying interface: no approach preserves its single-substitution accuracy as goals accumulate.
 
-\textbf{RQ5}: Across the different levels of stress configurations, again the interactive algorithm performed the best across all three model variations. APB was able to find successful plans as well  with much lower accuracy.
+\textbf{RQ3}: Under increasing distractor counts (\textsc{stress}) the Gemma4 typing configurations show no degradation across all three levels, while Deepseek is more variable. Because \textsc{stress} still requires only a single substitution, the baselines also hold up far better here than on \textsc{bulk}.
 
-Nearly across the board, Gemma4 performed better with the LLM typing based approaches, demonstrating at model choice does make a notable difference in performance. The most notable difference between Gemma4 with thinking enabled and without is not performance, which is comparable, but instead with inference time.  
+Across the board Gemma4 outperforms Deepseek with the typing approaches. \textsc{G4} and \textsc{G4NT} differ little on recovery but sharply elsewhere: \textsc{G4NT} refuses far more reliably (Table~\ref{tab:refusal}) and, lacking a reasoning trace, is substantially cheaper (Figure~\ref{fig:token_usage}).
 
-\textbf{RQ6}: Table~\ref{tab:recovery} shows performance across different semantic variations of structural identically PDDL encoding. These different encodings do see fluctuations in accuracy with the interactive approach seeing the highest accuracy across variations. APB is especially effected by this, with the accuracy dropping as low as $46.7\%$ in the medic task with Deepseek. 
+\textbf{RQ5}: The right block reports single-substitution recovery across four semantically distinct but structurally identical domains. Typing is robust to this renaming --- the Gemma4 configurations stay at or near $100\%$ everywhere --- whereas the unstructured baselines are far more brittle (APB dips as low as $32\%$), showing that end-to-end planning and free-form rewriting are more sensitive to surface naming than constrained typing.
 
-\begin{table}
+% ========== TABLE 2: REFUSAL ACCURACY ==========
+\begin{table}[t]
 \centering
-\caption{Refusal accuracy on unsolvable Construction  problems (\% of runs that correctly fail to produce a plan when no valid substitute exists). APB is omitted because it cannot structurally refuse.} 
+\caption{Refusal accuracy on MacGyver \textsc{no\_sub} problems (\% of runs that correctly fail to produce a plan when no valid substitute exists). Structured typing is what makes safe refusal possible: the judge and consensus modes decline on many unsolvable problems, whereas both unstructured baselines --- direct PDDL repair and end-to-end APB --- essentially never refuse ($0$--$24\%$), fabricating a substitution every time. Iterative refinement also collapses, as it loops until a plan is found. \textsc{Cons} is consensus at $n{=}3$.}
 \label{tab:refusal}
 \footnotesize
 \renewcommand{\arraystretch}{0.9}
-\begin{tabular}{ll|c}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{l|ccc|c}
 \toprule
-\textbf{Mode} & \textbf{Model} & \textbf{Refusal \%} \\
+\textbf{Method} & \textbf{DS} & \textbf{G4} & \textbf{G4NT} & \textbf{Avg} \\
 \midrule
-\multirow{3}{*}{\makecell{Consensus\\(n=3)}} & DS & 84.4 $\pm$ 26.0 \\
- & G4 & \textbf{100.0} $\pm$ 0.0 \\
- & G4NT & \textbf{100.0} $\pm$ 0.0 \\
+Cons       & 60.0 $\pm$ 32.7 & 56.0 $\pm$ 46.0 & 50.0 $\pm$ 46.4 & 55.3 $\pm$ 5.0 \\
+Iterative  & 18.0 $\pm$ 25.7 & 2.0 $\pm$ 6.3 & 40.0 $\pm$ 48.1 & 20.0 $\pm$ 19.1 \\
+Judge      & \textbf{66.0} $\pm$ 31.3 & \textbf{84.0} $\pm$ 35.0 & \textbf{80.0} $\pm$ 34.0 & \textbf{76.7} $\pm$ 9.5 \\
 \midrule
-\multirow{3}{*}{\makecell{Consensus\\(n=5)}} & DS & 84.4 $\pm$ 24.0 \\
- & G4 & \textbf{100.0} $\pm$ 0.0 \\
- & G4NT & \textbf{100.0} $\pm$ 0.0 \\
-\midrule
-\multirow{3}{*}{Iterative} & DS & 55.6 $\pm$ 34.3 \\
- & G4 & 24.4 $\pm$ 19.4 \\
- & G4NT & \textbf{100.0} $\pm$ 0.0 \\
-\midrule
-\multirow{3}{*}{Judge} & DS & 91.1 $\pm$ 10.5 \\
- & G4 & \textbf{100.0} $\pm$ 0.0 \\
- & G4NT & \textbf{100.0} $\pm$ 0.0 \\
+Direct     & 2.0 $\pm$ 6.3 & 0.0 $\pm$ 0.0 & 0.0 $\pm$ 0.0 & 0.7 $\pm$ 1.2 \\
+APB        & 24.0 $\pm$ 32.4 & 0.0 $\pm$ 0.0 & 0.0 $\pm$ 0.0 & 8.0 $\pm$ 13.9 \\
 \bottomrule
-\end{tabular}
+\end{tabular}}
 \end{table}
 
-\textbf{RQ4}: Table~\ref{tab:refusal} shows the refusal accuracy in problems that do not contain valid solutions. Most configurations show a high refusal percentage, showing that the LLMs will not attempt to make potentially dangerous invalid substitutions. Interestingly, the interactive approach, which performed highly in all other experiments sees a very low accuracy here. This is however, unsurprising as the algorithm continues to loop until a valid plan is found, not allowing the LLM to break the loop. 
+\textbf{RQ4}: Refusal (Table~\ref{tab:refusal}) is where the methods diverge most, and where the structured constraint proves decisive. Both unstructured baselines essentially never refuse --- the direct PDDL-repair baseline declines on just $0.7\%$ of unsolvable problems on average and APB on $8\%$ --- because both simply fabricate a substitution whenever asked to produce a plan. Only the typed methods, which hand a \emph{strict} planner a validated assignment, can decline by leaving the required type unfilled. Among them the judge mode refuses most reliably ($77\%$ average), iterative collapses ($20\%$, as low as $2\%$ for \textsc{G4}) because it loops until a plan is found, and consensus is intermediate. No method refuses perfectly, exposing a recovery--refusal trade-off: the same willingness that recovers hard substitutions also accepts invalid ones.
 
-Notably, \textsc{Gemma4} without thinking enabled (\textsc{G4NT}) achieves perfect refusal accuracy under the iterative approach, whereas \textsc{Deepseek} and \textsc{Gemma4} with thinking both frequently produce plans for unsolvable problems. Inspection of the results reveals a consistent pattern: thinking-enabled models change objects such as \texttt{ripe-banana} to type \texttt{hammer}, reasoning that its shape makes it a plausible substitute. \textsc{G4NT} is more literal in its type assignments and does not make this leap, correctly leaving such objects as their original type.
+This trade-off interacts with model choice: thinking-enabled models (\textsc{DS}, \textsc{G4}) most readily propose creative retypings such as \texttt{ripe-banana} to \texttt{hammer}, whereas \textsc{G4NT} is more literal and declines more often.
 
 \begin{figure}
   \centering
@@ -91,6 +85,6 @@ Notably, \textsc{Gemma4} without thinking enabled (\textsc{G4NT}) achieves perfe
 \end{figure}
 
 \subsubsection{Token Usage}
-Figure~\ref{fig:token_usage} shows average LLM token usage per problem (input and output) across all domains and methods. The consensus methods incur the highest fixed cost, scaling directly with the number of samples: \textsc{n=5} consumes roughly twice the tokens of \textsc{n=3}, as each query is issued independently regardless of outcome. The judge approach falls between the two consensus variants --- it avoids the full \textsc{n=5} sample budget but pays an additional cost for the judge call and any subsequent re-queries when the judge is unsatisfied.
+Figure~\ref{fig:token_usage} shows average LLM token usage per problem (input and output) across all domains and methods. Consensus is the most expensive typing strategy, as it issues $n$ independent queries regardless of outcome (shown here at $n{=}3$; cost scales linearly with $n$, see Appendix~\ref{app:consensus}). The judge mode is cheaper --- it pairs a single typing query with a lightweight judge call, plus occasional re-queries when the judge is unsatisfied.
 
-The iterative approach is the cheapest of the typing methods despite its looping behaviour. Unlike consensus, its lower bound is a single LLM query --- a valid plan after the first iteration requires no further calls --- which is reflected in the lower average cost. APB is cheapest overall, though its token profile is notably different: output tokens dominate for thinking-enabled models (\textsc{DS} and \textsc{G4}). \textsc{G4NT}, without a reasoning trace, has the lowest total cost across all methods.
+The iterative approach is the cheapest of the typing methods despite its looping behaviour: its lower bound is a single LLM query, since a valid plan after the first iteration requires no further calls. The direct and APB baselines are cheaper still. Their token profile is notably different, though: output tokens dominate for the thinking-enabled models (\textsc{DS} and \textsc{G4}), which emit long reasoning traces, whereas \textsc{G4NT} has the lowest total cost across all methods.

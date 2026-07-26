@@ -1,17 +1,37 @@
 \section{Experiments}
 \subsection{Environments}
-We have devised a custom task for experimentation named
-construction. A custom task was selected over a pre-existing
-environments due to the fact that these standard planning benchmarks are designed to be solvable without the need for creative problem solving.
+Standard planning benchmarks, such as those from the International Planning
+Competition (IPC), are constructed to stress the \emph{planner}: they scale search
+and grounding complexity but, by design, contain no \emph{typing gap} --- every
+object a required action needs is already correctly typed --- so they cannot
+exercise the capability we study. Because the gap is a property of the
+representation rather than of the search, we introduce a benchmark that induces
+typing gaps directly while holding planning structure fixed, isolating the variable
+of interest: the LLM's ability to recognise functional equivalence.
 
-  The construction task consists of a single domain file that includes
-  the actions \texttt{smash-cover}, \texttt{hit-nail}, \texttt{turn-bolt}, and
-  \texttt{turn-screw}. These actions operate on three fastener types ---
-  \texttt{nail}, \texttt{bolt}, and \texttt{screw} --- and require corresponding
-  tools: \texttt{hammer}, \texttt{wrench}, and \texttt{screwdriver}.
+Our base domain, \emph{construction}, consists of a single domain file with the
+actions \texttt{smash-cover}, \texttt{hit-nail}, \texttt{turn-bolt}, and
+\texttt{turn-screw}. These operate on three fastener types --- \texttt{nail},
+\texttt{bolt}, and \texttt{screw} --- and require corresponding tools:
+\texttt{hammer}, \texttt{wrench}, and \texttt{screwdriver}. In every problem the
+canonical tool is absent, opening a typing gap that a functionally equivalent
+substitute present in the environment must close.
+
+To probe how substitution behaviour depends on \emph{semantics} rather than
+\emph{structure}, we additionally construct a family of semantically distinct but
+structurally isomorphic domains. Prompting Claude Sonnet 4.6, we generated four
+alternative domains --- \emph{medic}, \emph{kitchen}, \emph{electronics}, and
+\emph{survival} --- each with entirely different actions, types, predicates, and
+object vocabularies (e.g., \texttt{incise-wound} with a \texttt{scalpel}, or
+\texttt{dice-vegetable} with a \texttt{chef-knife}), but with a planning skeleton
+identical to construction: the same number of roles, actions, and goals, and the
+same single-substitution dependency structure. Holding structure fixed while
+varying the semantic domain turns any performance difference into a direct measure
+of the LLM's cross-domain functional knowledge, free of confounds from planning
+difficulty.
 
 \subsection{Evaluation Framework}                                                                                              
-  The accompanying problem files can be separated into categories ---  standard, bulk, chained, no substitution, and stress. 
+  The accompanying problem files can be separated into categories ---  standard, bulk, no substitution, and stress.
 
 \begin{itemize}
 \item \textbf{Standard} -- A handful of tools and a goal where the
@@ -24,28 +44,22 @@ environments due to the fact that these standard planning benchmarks are designe
   consists of multiple parts, requiring multiple
   substitutions. \textbf{RQ2:} Does substitution accuracy degrade as
   the number of simultaneous goals increases?
+\item \textbf{Stress} -- A modification of standard with many
+  additional distractor tools, designed to test how the LLM scales
+  when reasoning over a larger set of objects. \textbf{RQ3:} How does
+  substitution accuracy scale as the number of distractor objects
+  grows?
 \item \textbf{No Substitution} -- Impossible problems where no valid
   substitution exists among the available tools, rendering the task
   unsolvable. \textbf{RQ4:} Does the LLM avoid false positives when no
   valid substitution exists?
-\item \textbf{Stress} -- A modification of standard with many
-  additional distractor tools, designed to test how the LLM scales
-  when reasoning over a larger set of objects. \textbf{RQ5:} How does
-  substitution accuracy scale as the number of distractor objects
-  grows?
 \end{itemize}
 
-A final, additional experiment was run to explore how variations in
-task semantics affect substitution accuracy. A synonym variant of the
-construction domain was created by prompting Claude Sonnet 4.6 to
-generate structurally equivalent but semantically different replacements for
-both the problem and domain PDDL representations. For example, one semantic variation is based on a medic task where the actions and objects are medically themed, whereas another theming resolves around cooking in a kitchen task. \textbf{RQ6:} Does substitution accuracy change when familiar
-object names   replaced with semantically equivalent but less
-intuitive synonyms?
+Beyond these categories, the isomorphic synonym domains introduced above probe semantic robustness. \textbf{RQ5:} Is substitution accuracy robust when the same structural task is re-expressed in an unrelated semantic domain?
 
 All problems are accompanied by hand annotated lists of valid substitutions --- this is to ensure that the LLM does assign unreasonable types. For example: a napkin cannot be reasonably used to hammer in a nail. The final output of the planner is checked against both a state machine that acts as a sort of simulator  and against this substitution manifest to make sure that outputted plans are valid. 
 
-We compare our proposed system against AutoPlanBench (APB) \cite{Stein_Fišer_Hoffmann_Koller_2025}. Comparing our approach against a traditional symbolic planner would not be possible, as without outside augmentation, the benchmark tasks are not solvable. APB was selected as it uses an LLM, and thus does not strictly require valid PDDL. Unlike the neuro-symbolic presented approach, APB is an end-to-end planning system that uses the LLM to generate the final plan. 
+We compare our proposed system against two LLM baselines. The first is AutoPlanBench (APB) \cite{Stein_Fišer_Hoffmann_Koller_2025}, an end-to-end planning system that uses the LLM to generate the final plan. Comparing against a traditional symbolic planner would not be possible, as without outside augmentation the benchmark tasks are not solvable; APB was selected because it uses an LLM and thus does not strictly require valid PDDL. The second is a \emph{direct} PDDL-repair baseline that, like CAST, uses the LLM to modify the problem so the planner can solve it, but \emph{without} the structural constraint: rather than emitting a validated object-to-type map that we apply, the LLM rewrites the problem PDDL freely and the result is passed to the same planner. This baseline isolates the value of restricting the LLM to type assignment. \textbf{RQ6:} Does constraining the LLM to a validated type assignment recover substitutions more reliably than letting it rewrite the PDDL directly or generate the plan end-to-end?
 
 \subsubsection{Prompt Iteration}
 Claude 4.6 Sonnet was used to iteratively refine the prompts used for evaluation. Provided with a base prompt, Claude was given access to a script that allowed it to query the smaller LLMs used for evaluation. It was instructed to make modifications to the prompt to improve substitution accuracy. Claude was instructed not to make the prompts task agnostic as not to include any domain-specific hints. The final prompt underwent a manual review by the authors.
@@ -58,5 +72,4 @@ Robots may be forced to operate in service denied environments. Due to this fact
 
 Pyperplan was used as the planning engine for experimentation \cite{alkhazraji-et-al-zenodo2020}. While Pyperplan's performance is not state of the art, our results do not take into account planner speed. Pyperplan was selected as it is written in  Python, making it easy to integrate with the rest of our codebase. All of the code used for experimentation is available on GitHub\footnote{Redacted For Review}.
 
-Experiments were ran using an Nvidia A100, 8 CPU cores, and
-96GB of RAM. Each experiment was ran 15 times, and the results were averaged.
+Each problem is solved five times: for the typing and direct methods these are five independent samples at temperature $0.2$, and for APB (deterministic at temperature $0$) five distinct natural-language domain descriptions, so every run is a genuine replicate rather than a duplicate. Each problem category contains ten problems produced by a generator that deterministically enumerates every (task, valid-substitute) combination drawn from the hand-annotated substitution manifest, giving complete and unbiased coverage of the substitution space rather than a hand-picked or randomly sampled subset. Unless stated otherwise, each reported cell is the mean per-category recovery and the accompanying $\pm$ is the standard deviation across the ten per-problem rates (each itself averaged over the five runs); it therefore reflects problem-to-problem difficulty spread rather than run-to-run sampling noise. The main results report consensus at $n{=}3$ samples; the $n\in\{1,3,5\}$ sample-count ablation is provided in Appendix~\ref{app:consensus}.

@@ -1,18 +1,8 @@
 \section{Related Work}
 \subsection{Model Repair in Symbolic Planning}
-Creative problem solving can be described as a failure in an agent's
-understanding of the world such that it is insufficient to complete a
-given task \cite{ijcai2023p777}. Existing literature has explored
-various approaches to this problem. In one line of work reinforcement
-learning (RL) is used to discover action primitives after reaching an
-unrecoverable state \cite{rapid_learn, lorang_rsj_2024}. \citet{gizzi_ieee_2019}
-propose a system that enumerates action-object combinations after
-reaching a failure case. Rather than learning
-entirely new action primitives or having to test many different
-action-object pairs, our approach seeks to use an LLM to offer object
-substitions.
+Symbolic planners fail outright when a task is unsolvable as specified; \emph{model repair} asks how the specification can be modified so that a solution exists~\cite{bercher2025modelrepair}. A closely related line of work on \emph{creative problem solving} treats such failures as an agent's model of the world being insufficient to complete the task at hand~\cite{ijcai2023p777}. Both motivate approaches that repair the \emph{action model}: reinforcement learning discovers new action primitives after reaching an unrecoverable state~\cite{rapid_learn, lorang_rsj_2024}, and \citet{gizzi_ieee_2019} enumerate action-object combinations following a failure case. \citet{gragera2023repair} instead fix incomplete action effects, compiling the unsolvable task into an extended task that may insert the missing effects.
 
-Repair approaches address planning tasks that are unsolvable as specified, asking how the specification can be modified so that a solution exists~\cite{bercher2025modelrepair}. \citet{gragera2023repair}, for example, perform repair by fixing incomplete action effects by compiling the unsolvable task into an extended task that may insert the missing effects. Our approach instead works by reassigning the types of objects already present in the problem, leaving the domain, goal, and initial state intact. Most relevant to our design, \citet{gragera2023exploring} prompt an LLM \emph{stand-alone} to fix unsolvable tasks and find its limited reasoning insufficient for identifying repairs that yield solvable tasks. We reach a different outcome by changing the LLM's role: rather than trusting it to repair the task, we confine it to proposing type reassignments and delegate all verification to the symbolic planner.
+These approaches expand or alter the domain's actions. Our repair is deliberately narrower: we leave the domain, goal, and initial state intact and reassign only the types of objects already present, so that a functionally appropriate object can fill a role the original typing excluded. Most relevant to our design, \citet{gragera2023exploring} prompt an LLM \emph{stand-alone} to fix unsolvable tasks and find its limited reasoning insufficient for identifying repairs that yield solvable tasks. We reach a different outcome by changing the LLM's role: rather than trusting it to repair the task, we confine it to proposing type reassignments and delegate all verification to the symbolic planner.
 
 \subsection{LLMs for Planning}
 The use of LLMs for symbolic planning has been widely explored, with

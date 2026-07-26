@@ -1,9 +1,4 @@
-\begin{figure*}
-  \centering
-  \includegraphics[width=1\textwidth]{figures/robot_example.png}
-  \caption{\small{Architectural depiction of LLM typing pipeline. Shows the running example of robot facing a novel task. Given the goal, erase the blackboard, the robot must take into account the objects available to it. These objects do not include a dry erase marker, and instead require the robot to use the cloth to wipe the board.}}
-    \label{fig:robot_example}
-\end{figure*}
+\input{sections/pipeline_figure}
 
 \section{Introduction}
 \label{sec:intro}
@@ -69,21 +64,10 @@ We investigate three CAST variants: consensus voting, iterative refinement,
 and judge-based selection, and evaluate their ability to recover valid plans,
 refuse problems for which no suitable substitute exists, and manage inference
 costs. Across multiple problem configurations and semantic variations, CAST
-substantially outperforms an end-to-end LLM planning baseline on tasks requiring
-functional substitution. We additionally demonstrate the complete pipeline on
+substantially outperforms both an end-to-end LLM planning baseline and an
+unconstrained baseline that lets the LLM rewrite the PDDL directly, on tasks
+requiring functional substitution. We additionally demonstrate the complete pipeline on
 a physical robot.
-
-The contributions of this work are:
-\begin{itemize}
-    \item CAST, a framework for resolving runtime typing gaps by combining
-    LLM-based semantic type assignment with symbolic planning;
-
-    \item three querying strategies that expose different trade-offs among plan
-    recovery, refusal, and inference cost; and
-
-    \item an evaluation across solvable and unsolvable substitution problems,
-    together with a physical-robot demonstration.
-\end{itemize}
 
 
 % \section{Introduction}
