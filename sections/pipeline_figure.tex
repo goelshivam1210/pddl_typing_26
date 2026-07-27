@@ -8,7 +8,7 @@
   (:requirements :strips :typing)
   (:types robot graspable - object
           eraser - graspable
-          whiteboard - object)
+          blackboard - object)
   { ... })
 \end{lstlisting}\end{lrbox}%
   \begin{lrbox}{\pddlProbU}\begin{lstlisting}[style=pddl]
@@ -17,10 +17,10 @@
   (:objects
     stretch      - object
     cloth_0      - object
-    whiteboard_0 - object
+    blackboard_0 - object
     marker_0     - object
     mug_0        - object)
-  (:goal (whiteboard_clean whiteboard_0)))
+  (:goal (blackboard_clean blackboard_0)))
 \end{lstlisting}\end{lrbox}%
   \begin{lrbox}{\pddlProbT}\begin{lstlisting}[style=pddltyped]
 (define (problem stretch_cleanup_0)
@@ -28,10 +28,10 @@
   (:objects
     stretch      - robot
     cloth_0      - graspable
-    whiteboard_0 - whiteboard
+    blackboard_0 - blackboard
     marker_0     - graspable
     mug_0        - graspable)
-  (:goal (whiteboard_clean whiteboard_0)))
+  (:goal (blackboard_clean blackboard_0)))
 \end{lstlisting}\end{lrbox}%
   % equalize all panel widths to the widest (the problem panels)
   \setlength{\panelw}{\wd\pddlProbU}%
@@ -40,12 +40,14 @@
   \begin{tikzpicture}[
       stage/.style={draw=stagerule,rounded corners=4pt,fill=stagebg,inner sep=5pt},
       bigbox/.style={draw=stagerule,rounded corners=3pt,fill=stagebg,
-                     align=center,font=\bfseries,inner sep=5pt,minimum width=3.2cm},
+                     align=center,font=\bfseries,inner sep=5pt,minimum width=4.5cm},
       flow/.style={-{Stealth[length=2.6mm,width=2.6mm]},line width=1pt,accent},
     ]
     % left-column anchor: physical task at origin
+    % Double-blind: uses the logo-redacted mug. For the de-anonymized/camera-ready
+    % version, swap to figures/robot_photo_annotated_logo.png (mug logo visible).
     \node[bigbox,anchor=north] (photo) at (0,0)
-        {\includegraphics[width=3cm]{figures/robot_photo.png}\\[1pt]Physical Task};
+        {\includegraphics[width=4.5cm]{figures/robot_photo_annotated.png}\\[1pt]Scene};
 
     % right column: the two PDDL stages, placed RELATIVE to the photo
     % (fixed gap) so font-metric differences never cause overlap
@@ -81,6 +83,6 @@
     \draw[flow] (planner.west) -- (planner.west -| FL)
           -- (photo.west -| FL) -- (photo.west);
   \end{tikzpicture}}
-  \caption{\small{The CAST typing pipeline. A physical task is encoded at runtime into a typed domain and a problem whose objects carry only an overly-general base type, leaving the goal unreachable (the typing gap). The LLM reassigns each object a functional type already defined in the domain (highlighted), and the repaired problem is handed to a symbolic planner.}}
+  \caption{\small{The CAST typing pipeline. A scene is encoded at runtime into a typed domain and a problem whose objects carry only an overly-general base type, leaving the goal unreachable (the typing gap). The LLM reassigns each object a functional type already defined in the domain (highlighted), and the repaired problem is handed to a symbolic planner.}}
     \label{fig:robot_example}
 \end{figure}
