@@ -2,20 +2,14 @@
 \subsection{Environments}
 Standard planning benchmarks, such as those from the International Planning
 Competition (IPC), are constructed to stress the \emph{planner}: they scale search
-and grounding complexity but, by design, contain no \emph{typing gap} --- every
-object a required action needs is already correctly typed --- so they cannot
+and grounding complexity but, by design, contain no \emph{typing gap} (i.e., every
+object a required action needs is already correctly typed), so they cannot
 exercise the capability we study. Because the gap is a property of the
 representation rather than of the search, we introduce a benchmark that induces
 typing gaps directly while holding planning structure fixed, isolating the variable
 of interest: the LLM's ability to recognise functional equivalence.
 
-Our base domain, \emph{construction}, consists of a single domain file with the
-actions \texttt{smash-cover}, \texttt{hit-nail}, \texttt{turn-bolt}, and
-\texttt{turn-screw}. These operate on three fastener types --- \texttt{nail},
-\texttt{bolt}, and \texttt{screw} --- and require corresponding tools:
-\texttt{hammer}, \texttt{wrench}, and \texttt{screwdriver}. In every problem the
-canonical tool is absent, opening a typing gap that a functionally equivalent
-substitute present in the environment must close.
+Our base domain, \emph{construction}, consists of a single domain file with the actions $\mathcal{A} = \{$\texttt{smash-cover}(tool:\texttt{hammer}, fastener:\texttt{fastener}), \texttt{hit-nail}(tool:\texttt{hammer}, fastener:\texttt{nail}), \texttt{turn-bolt}(tool:\texttt{wrench}, fastener:\texttt{bolt}), \texttt{turn-screw}(tool:\texttt{screwdriver}, fastener:\texttt{screw})$\}$. In every problem the canonical tool is absent, opening a typing gap that a functionally equivalent substitute present in the environment must close.
 
 To probe how substitution behaviour depends on \emph{semantics} rather than
 \emph{structure}, we additionally construct a family of semantically distinct but
@@ -31,7 +25,7 @@ of the LLM's cross-domain functional knowledge, free of confounds from planning
 difficulty.
 
 \subsection{Evaluation Framework}                                                                                              
-  The accompanying problem files can be separated into categories ---  standard, bulk, no substitution, and stress.
+  The accompanying problem files can be separated into categories: standard, bulk, no substitution, and stress.
 
 \begin{itemize}
 \item \textbf{Standard} -- A handful of tools and a goal where the
@@ -57,9 +51,46 @@ difficulty.
 
 Beyond these categories, the isomorphic synonym domains introduced above probe semantic robustness. \textit{RQ5:} Is substitution accuracy robust when the same structural task is re-expressed in an unrelated semantic domain?
 
-All problems are accompanied by hand annotated lists of valid substitutions --- this is to ensure that the LLM does assign unreasonable types. For example: a napkin cannot be reasonably used to hammer in a nail. The final output of the planner is checked against both a state machine that acts as a sort of simulator  and against this substitution manifest to make sure that outputted plans are valid. 
+All problems are accompanied by hand-annotated lists of valid substitutions, which ensure that the LLM does not assign unreasonable types. For example: a napkin cannot be reasonably used to hammer in a nail. Every returned plan $\pi = \langle a_1,\ldots,a_k\rangle$ is independently re-verified by simulating its execution from the initial state: we confirm each $a_i$ is applicable under $\gamma$ at its point in the sequence and that the resulting state satisfies the goal, $G \subseteq \gamma(I,\pi)$, and we additionally check $\pi$ against the substitution manifest to confirm the type assignment it relies on is reasonable.
 
-We compare CAST against two LLM baselines. The first is AutoPlanBench (APB) \cite{Stein_Fišer_Hoffmann_Koller_2025}, an end-to-end planning system that uses the LLM to generate the final plan. Comparing against a traditional symbolic planner would not be possible, as without outside augmentation the benchmark tasks are not solvable; APB was selected because it uses an LLM and thus does not strictly require valid PDDL. The second is a \emph{direct} PDDL-repair baseline that, like CAST, uses the LLM to modify the problem so the planner can solve it, but \emph{without} the structural constraint: rather than emitting a validated object-to-type map that we apply, the LLM rewrites the problem PDDL freely and the result is passed to the same planner. This baseline isolates the value of restricting the LLM to type assignment. \textit{RQ6:} Does constraining the LLM to a validated type assignment recover substitutions more reliably than letting it rewrite the PDDL directly or generate the plan end-to-end?
+We compare CAST against two LLM baselines. The first is AutoPlanBench (APB) \cite{Stein_Fišer_Hoffmann_Koller_2025}, an end-to-end planning system that uses the LLM to generate the final plan. Comparing against a traditional symbolic planner would not be possible, as without outside augmentation the benchmark tasks are not solvable; APB was selected because it uses an LLM and thus does not strictly require valid PDDL. The second is a \emph{direct} PDDL-repair baseline, inspired by the stand-alone LLM PDDL-repair setup of \citet{gragera2023exploring}, that, like CAST, uses the LLM to modify the problem so the planner can solve it, but \emph{without} the structural constraint: rather than emitting a validated object-to-type map that we apply, the LLM rewrites the problem PDDL freely and the result is passed to the same planner. This baseline isolates the value of restricting the LLM to type assignment. \textit{RQ6:} Does constraining the LLM to a validated type assignment recover substitutions more reliably than letting it rewrite the PDDL directly or generate the plan end-to-end?
+
+% ========== COMBINED: CATEGORY BREAKDOWN + SEMANTIC ROBUSTNESS ==========
+\begin{table*}[t]
+\centering
+\caption{Recovery (\%) by Construction problem category (left) and by semantic domain on single-substitution problems (right): the left block shows how accuracy scales with problem difficulty, the right block shows robustness to surface renaming. \textsc{Cons} is consensus at $n{=}3$ (the $n\in\{1,3,5\}$ ablation is in the appendix), and \textsc{IT} is iterative. \textsc{no\_sub} refusal is in Table~\ref{tab:refusal}. APB cells report semantic correctness of the generated plan. Bold marks the column maximum.}
+\label{tab:results}
+\footnotesize
+\renewcommand{\arraystretch}{0.9}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{l|ccccc|cccc}
+\toprule
+ & \multicolumn{5}{c|}{\textbf{Construction Categories}} & \multicolumn{4}{c}{\textbf{Synonym Domains (single)}} \\
+\midrule
+\textbf{Config} & \textbf{single} & \textbf{bulk} & \textbf{stress-10} & \textbf{stress-20} & \textbf{stress-50} & \textbf{Electronics} & \textbf{Kitchen} & \textbf{Medic} & \textbf{Survival} \\
+\midrule
+DS-Cons     & \textbf{100.0} $\pm$ 0.0 & 54.0 $\pm$ 38.9 & 86.0 $\pm$ 29.9 & 82.0 $\pm$ 29.0 & 88.0 $\pm$ 21.5 & 98.0 $\pm$ 6.3 & 88.0 $\pm$ 16.9 & \textbf{100.0} $\pm$ 0.0 & 96.0 $\pm$ 12.6 \\
+DS-IT       & 96.0 $\pm$ 12.6 & 58.0 $\pm$ 50.3 & 84.0 $\pm$ 24.6 & 82.0 $\pm$ 34.6 & 78.0 $\pm$ 25.7 & 98.0 $\pm$ 6.3 & 92.0 $\pm$ 10.3 & \textbf{100.0} $\pm$ 0.0 & 94.0 $\pm$ 9.7 \\
+DS-Judge    & 90.0 $\pm$ 19.4 & 54.0 $\pm$ 44.3 & 80.0 $\pm$ 29.8 & 72.0 $\pm$ 31.6 & 74.0 $\pm$ 31.3 & 98.0 $\pm$ 6.3 & 60.0 $\pm$ 35.3 & \textbf{100.0} $\pm$ 0.0 & 92.0 $\pm$ 14.0 \\
+\midrule
+G4-Cons     & \textbf{100.0} $\pm$ 0.0 & 60.0 $\pm$ 51.6 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & 98.0 $\pm$ 6.3 \\
+G4-IT       & \textbf{100.0} $\pm$ 0.0 & 60.0 $\pm$ 51.6 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 \\
+G4-Judge    & 86.0 $\pm$ 25.0 & 60.0 $\pm$ 51.6 & 82.0 $\pm$ 19.9 & 90.0 $\pm$ 17.0 & 90.0 $\pm$ 21.6 & 92.0 $\pm$ 14.0 & 82.0 $\pm$ 19.9 & 98.0 $\pm$ 6.3 & 94.0 $\pm$ 13.5 \\
+\midrule
+G4NT-Cons   & \textbf{100.0} $\pm$ 0.0 & 58.0 $\pm$ 50.3 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 \\
+G4NT-IT     & \textbf{100.0} $\pm$ 0.0 & \textbf{68.0} $\pm$ 42.4 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & 98.0 $\pm$ 6.3 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 \\
+G4NT-Judge  & \textbf{100.0} $\pm$ 0.0 & 60.0 $\pm$ 48.1 & 98.0 $\pm$ 6.3 & \textbf{100.0} $\pm$ 0.0 & 98.0 $\pm$ 6.3 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 \\
+\midrule
+DS-Direct   & 76.0 $\pm$ 42.0 & 38.0 $\pm$ 43.7 & 66.0 $\pm$ 37.8 & 66.0 $\pm$ 38.9 & 62.0 $\pm$ 41.6 & 88.0 $\pm$ 19.3 & 78.0 $\pm$ 33.3 & 88.0 $\pm$ 25.3 & 96.0 $\pm$ 8.4 \\
+G4-Direct   & \textbf{100.0} $\pm$ 0.0 & 60.0 $\pm$ 51.6 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 \\
+G4NT-Direct & 80.0 $\pm$ 42.2 & 60.0 $\pm$ 51.6 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & 90.0 $\pm$ 31.6 & 90.0 $\pm$ 31.6 & 70.0 $\pm$ 48.3 & 96.0 $\pm$ 12.6 & 98.0 $\pm$ 6.3 \\
+\midrule
+DS-APB      & 42.0 $\pm$ 30.5 & 46.0 $\pm$ 42.2 & 42.0 $\pm$ 31.9 & 54.0 $\pm$ 26.7 & 50.0 $\pm$ 27.1 & 70.0 $\pm$ 25.4 & 32.0 $\pm$ 34.3 & 36.0 $\pm$ 31.0 & 52.0 $\pm$ 42.4 \\
+G4-APB      & 92.0 $\pm$ 25.3 & 54.0 $\pm$ 48.1 & 82.0 $\pm$ 33.3 & 86.0 $\pm$ 31.3 & 74.0 $\pm$ 42.2 & \textbf{100.0} $\pm$ 0.0 & 94.0 $\pm$ 19.0 & \textbf{100.0} $\pm$ 0.0 & 90.0 $\pm$ 10.5 \\
+G4NT-APB    & 80.0 $\pm$ 42.2 & 38.0 $\pm$ 41.6 & \textbf{100.0} $\pm$ 0.0 & \textbf{100.0} $\pm$ 0.0 & 88.0 $\pm$ 31.6 & 70.0 $\pm$ 48.3 & 50.0 $\pm$ 52.7 & 80.0 $\pm$ 37.7 & 50.0 $\pm$ 52.7 \\
+\bottomrule
+\end{tabular}}
+\end{table*}
 
 \subsubsection{Prompt Iteration}
 Claude 4.6 Sonnet was used to iteratively refine the prompts used for evaluation. Provided with a base prompt, Claude was given access to a script that allowed it to query the smaller LLMs used for evaluation. It was instructed to make modifications to the prompt to improve substitution accuracy. Claude was instructed not to make the prompts task agnostic as not to include any domain-specific hints. The final prompt underwent a manual review by the authors.
