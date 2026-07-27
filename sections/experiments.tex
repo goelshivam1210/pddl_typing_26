@@ -38,28 +38,28 @@ difficulty.
   tool traditionally used to solve the goal is missing. One of the
   available tools can be validly substituted to solve the goal (e.g.,
   substituting a tool as a hammer to drive in a loose
-  nail). \textbf{RQ1:} Can the LLM correctly identify a valid tool
+  nail). \textit{RQ1:} Can the LLM correctly identify a valid tool
   substitution when the canonical tool is absent?
 \item \textbf{Multiple-goals} -- A modification of standard where the goal
   consists of multiple parts, requiring multiple
-  substitutions. \textbf{RQ2:} Does substitution accuracy degrade as
+  substitutions. \textit{RQ2:} Does substitution accuracy degrade as
   the number of simultaneous goals increases?
 \item \textbf{Stress} -- A modification of standard with many
   additional distractor tools, designed to test how the LLM scales
-  when reasoning over a larger set of objects. \textbf{RQ3:} How does
+  when reasoning over a larger set of objects. \textit{RQ3:} How does
   substitution accuracy scale as the number of distractor objects
   grows?
 \item \textbf{No Substitution} -- Impossible problems where no valid
   substitution exists among the available tools, rendering the task
-  unsolvable. \textbf{RQ4:} Does the LLM avoid false positives when no
+  unsolvable. \textit{RQ4:} Does the LLM avoid false positives when no
   valid substitution exists?
 \end{itemize}
 
-Beyond these categories, the isomorphic synonym domains introduced above probe semantic robustness. \textbf{RQ5:} Is substitution accuracy robust when the same structural task is re-expressed in an unrelated semantic domain?
+Beyond these categories, the isomorphic synonym domains introduced above probe semantic robustness. \textit{RQ5:} Is substitution accuracy robust when the same structural task is re-expressed in an unrelated semantic domain?
 
 All problems are accompanied by hand annotated lists of valid substitutions --- this is to ensure that the LLM does assign unreasonable types. For example: a napkin cannot be reasonably used to hammer in a nail. The final output of the planner is checked against both a state machine that acts as a sort of simulator  and against this substitution manifest to make sure that outputted plans are valid. 
 
-We compare our proposed system against two LLM baselines. The first is AutoPlanBench (APB) \cite{Stein_Fišer_Hoffmann_Koller_2025}, an end-to-end planning system that uses the LLM to generate the final plan. Comparing against a traditional symbolic planner would not be possible, as without outside augmentation the benchmark tasks are not solvable; APB was selected because it uses an LLM and thus does not strictly require valid PDDL. The second is a \emph{direct} PDDL-repair baseline that, like CAST, uses the LLM to modify the problem so the planner can solve it, but \emph{without} the structural constraint: rather than emitting a validated object-to-type map that we apply, the LLM rewrites the problem PDDL freely and the result is passed to the same planner. This baseline isolates the value of restricting the LLM to type assignment. \textbf{RQ6:} Does constraining the LLM to a validated type assignment recover substitutions more reliably than letting it rewrite the PDDL directly or generate the plan end-to-end?
+We compare CAST against two LLM baselines. The first is AutoPlanBench (APB) \cite{Stein_Fišer_Hoffmann_Koller_2025}, an end-to-end planning system that uses the LLM to generate the final plan. Comparing against a traditional symbolic planner would not be possible, as without outside augmentation the benchmark tasks are not solvable; APB was selected because it uses an LLM and thus does not strictly require valid PDDL. The second is a \emph{direct} PDDL-repair baseline that, like CAST, uses the LLM to modify the problem so the planner can solve it, but \emph{without} the structural constraint: rather than emitting a validated object-to-type map that we apply, the LLM rewrites the problem PDDL freely and the result is passed to the same planner. This baseline isolates the value of restricting the LLM to type assignment. \textit{RQ6:} Does constraining the LLM to a validated type assignment recover substitutions more reliably than letting it rewrite the PDDL directly or generate the plan end-to-end?
 
 \subsubsection{Prompt Iteration}
 Claude 4.6 Sonnet was used to iteratively refine the prompts used for evaluation. Provided with a base prompt, Claude was given access to a script that allowed it to query the smaller LLMs used for evaluation. It was instructed to make modifications to the prompt to improve substitution accuracy. Claude was instructed not to make the prompts task agnostic as not to include any domain-specific hints. The final prompt underwent a manual review by the authors.
@@ -72,4 +72,4 @@ Robots may be forced to operate in service denied environments. Due to this fact
 
 Pyperplan was used as the planning engine for experimentation \cite{alkhazraji-et-al-zenodo2020}. While Pyperplan's performance is not state of the art, our results do not take into account planner speed. Pyperplan was selected as it is written in  Python, making it easy to integrate with the rest of our codebase. All of the code used for experimentation is available on GitHub\footnote{Redacted For Review}.
 
-Each problem is solved five times: for the typing and direct methods these are five independent samples at temperature $0.2$, and for APB (deterministic at temperature $0$) five distinct natural-language domain descriptions, so every run is a genuine replicate rather than a duplicate. Each problem category contains ten problems produced by a generator that deterministically enumerates every (task, valid-substitute) combination drawn from the hand-annotated substitution manifest, giving complete and unbiased coverage of the substitution space rather than a hand-picked or randomly sampled subset. Unless stated otherwise, each reported cell is the mean per-category recovery and the accompanying $\pm$ is the standard deviation across the ten per-problem rates (each itself averaged over the five runs); it therefore reflects problem-to-problem difficulty spread rather than run-to-run sampling noise. The main results report consensus at $n{=}3$ samples; the $n\in\{1,3,5\}$ sample-count ablation is provided in Appendix~\ref{app:consensus}.
+Each problem is solved five times: for CAST and the direct baseline these are five independent samples at temperature $0.2$, and for APB (deterministic at temperature $0$) five distinct natural-language domain descriptions, so every run is a genuine replicate rather than a duplicate. Each problem category contains ten problems produced by a generator that deterministically enumerates every (task, valid-substitute) combination drawn from the hand-annotated substitution manifest, giving complete and unbiased coverage of the substitution space rather than a hand-picked or randomly sampled subset. Unless stated otherwise, each reported cell is the mean per-category recovery and the accompanying $\pm$ is the standard deviation across the ten per-problem rates (each itself averaged over the five runs); it therefore reflects problem-to-problem difficulty spread rather than run-to-run sampling noise. The main results report consensus at $n{=}3$ samples; the $n\in\{1,3,5\}$ sample-count ablation is provided in Appendix~\ref{app:consensus}.

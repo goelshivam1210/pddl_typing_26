@@ -39,17 +39,17 @@ G4NT-APB    & 80.0 $\pm$ 42.2 & 38.0 $\pm$ 41.6 & \textbf{100.0} $\pm$ 0.0 & \te
 \end{table*}
 
 
-Table~\ref{tab:results} reports recovery for every configuration and addresses \textbf{RQ1}, \textbf{RQ2}, \textbf{RQ3}, and \textbf{RQ6}.
+Table~\ref{tab:results} reports recovery for every configuration and addresses \textit{RQ1}, \textit{RQ2}, \textit{RQ3}, and \textit{RQ6}.
 
-\textbf{RQ1/RQ6}: On single-substitution problems the typing methods recover near-perfectly --- the Gemma4 variants saturate and Deepseek is close --- while both unstructured baselines are weaker and far less consistent. Constraining the LLM to a validated type assignment therefore recovers substitutions more reliably than free-form PDDL rewriting (direct) or end-to-end planning (APB).
+\textit{RQ1/RQ6}: On single-substitution problems CAST recovers near-perfectly --- the Gemma4 variants saturate and Deepseek is close --- while both unstructured baselines are weaker and far less consistent. Constraining the LLM to a validated type assignment therefore recovers substitutions more reliably than free-form PDDL rewriting (direct) or end-to-end planning (APB).
 
-\textbf{RQ2}: \textsc{bulk} problems, which require several simultaneous substitutions, are the hardest category for every method, with the strongest configurations plateauing near $60\%$ at high variance. The bottleneck is joint-substitution combinatorics rather than the querying interface: no approach preserves its single-substitution accuracy as goals accumulate.
+\textit{RQ2}: \textsc{bulk} problems, which require several simultaneous substitutions, are the hardest category for every method, with the strongest configurations plateauing near $60\%$ at high variance. The bottleneck is joint-substitution combinatorics rather than the querying interface: no approach preserves its single-substitution accuracy as goals accumulate.
 
-\textbf{RQ3}: Under increasing distractor counts (\textsc{stress}) the Gemma4 typing configurations show no degradation across all three levels, while Deepseek is more variable. Because \textsc{stress} still requires only a single substitution, the baselines also hold up far better here than on \textsc{bulk}.
+\textit{RQ3}: Under increasing distractor counts (\textsc{stress}) the Gemma4 CAST configurations show no degradation across all three levels, while Deepseek is more variable. Because \textsc{stress} still requires only a single substitution, the baselines also hold up far better here than on \textsc{bulk}.
 
-Across the board Gemma4 outperforms Deepseek with the typing approaches. \textsc{G4} and \textsc{G4NT} differ little on recovery but sharply elsewhere: \textsc{G4NT} refuses far more reliably (Table~\ref{tab:refusal}) and, lacking a reasoning trace, is substantially cheaper (Figure~\ref{fig:token_usage}).
+Across the board Gemma4 outperforms Deepseek with CAST. \textsc{G4} and \textsc{G4NT} differ little on recovery but sharply elsewhere: \textsc{G4NT} refuses far more reliably (Table~\ref{tab:refusal}) and, lacking a reasoning trace, is substantially cheaper (Figure~\ref{fig:token_usage}).
 
-\textbf{RQ5}: The right block reports single-substitution recovery across four semantically distinct but structurally identical domains. Typing is robust to this renaming --- the Gemma4 configurations stay at or near $100\%$ everywhere --- whereas the unstructured baselines are far more brittle (APB dips as low as $32\%$), showing that end-to-end planning and free-form rewriting are more sensitive to surface naming than constrained typing.
+\textit{RQ5}: The right block reports single-substitution recovery across four semantically distinct but structurally identical domains. Typing is robust to this renaming --- the Gemma4 configurations stay at or near $100\%$ everywhere --- whereas the unstructured baselines are far more brittle (APB dips as low as $32\%$), showing that end-to-end planning and free-form rewriting are more sensitive to surface naming than constrained typing.
 
 % ========== TABLE 2: REFUSAL ACCURACY ==========
 \begin{table}[t]
@@ -73,7 +73,7 @@ APB        & 24.0 $\pm$ 32.4 & 0.0 $\pm$ 0.0 & 0.0 $\pm$ 0.0 & 8.0 $\pm$ 13.9 \\
 \end{tabular}}
 \end{table}
 
-\textbf{RQ4}: Refusal (Table~\ref{tab:refusal}) is where the methods diverge most, and where the structured constraint proves decisive. Both unstructured baselines essentially never refuse --- the direct PDDL-repair baseline declines on just $0.7\%$ of unsolvable problems on average and APB on $8\%$ --- because both simply fabricate a substitution whenever asked to produce a plan. Only the typed methods, which hand a \emph{strict} planner a validated assignment, can decline by leaving the required type unfilled. Among them the judge mode refuses most reliably ($77\%$ average), iterative collapses ($20\%$, as low as $2\%$ for \textsc{G4}) because it loops until a plan is found, and consensus is intermediate. No method refuses perfectly, exposing a recovery--refusal trade-off: the same willingness that recovers hard substitutions also accepts invalid ones.
+\textit{RQ4}: Refusal (Table~\ref{tab:refusal}) is where the methods diverge most, and where the structured constraint proves decisive. Both unstructured baselines essentially never refuse --- the direct PDDL-repair baseline declines on just $0.7\%$ of unsolvable problems on average and APB on $8\%$ --- because both simply fabricate a substitution whenever asked to produce a plan. Only the typed methods, which hand a \emph{strict} planner a validated assignment, can decline by leaving the required type unfilled. Among them the judge mode refuses most reliably ($77\%$ average), iterative collapses ($20\%$, as low as $2\%$ for \textsc{G4}) because it loops until a plan is found, and consensus is intermediate. No method refuses perfectly, exposing a recovery--refusal trade-off: the same willingness that recovers hard substitutions also accepts invalid ones.
 
 This trade-off interacts with model choice: thinking-enabled models (\textsc{DS}, \textsc{G4}) most readily propose creative retypings such as \texttt{ripe-banana} to \texttt{hammer}, whereas \textsc{G4NT} is more literal and declines more often.
 
@@ -85,6 +85,6 @@ This trade-off interacts with model choice: thinking-enabled models (\textsc{DS}
 \end{figure}
 
 \subsubsection{Token Usage}
-Figure~\ref{fig:token_usage} shows average LLM token usage per problem (input and output) across all domains and methods. Consensus is the most expensive typing strategy, as it issues $n$ independent queries regardless of outcome (shown here at $n{=}3$; cost scales linearly with $n$, see Appendix~\ref{app:consensus}). The judge mode is cheaper --- it pairs a single typing query with a lightweight judge call, plus occasional re-queries when the judge is unsatisfied.
+Figure~\ref{fig:token_usage} shows average LLM token usage per problem (input and output) across all domains and methods. Consensus is the most expensive CAST variant, as it issues $n$ independent queries regardless of outcome (shown here at $n{=}3$; cost scales linearly with $n$, see Appendix~\ref{app:consensus}). The judge mode is cheaper --- it pairs a single typing query with a lightweight judge call, plus occasional re-queries when the judge is unsatisfied.
 
-The iterative approach is the cheapest of the typing methods despite its looping behaviour: its lower bound is a single LLM query, since a valid plan after the first iteration requires no further calls. The direct and APB baselines are cheaper still. Their token profile is notably different, though: output tokens dominate for the thinking-enabled models (\textsc{DS} and \textsc{G4}), which emit long reasoning traces, whereas \textsc{G4NT} has the lowest total cost across all methods.
+The iterative approach is the cheapest of the CAST variants despite its looping behaviour: its lower bound is a single LLM query, since a valid plan after the first iteration requires no further calls. The direct and APB baselines are cheaper still. Their token profile is notably different, though: output tokens dominate for the thinking-enabled models (\textsc{DS} and \textsc{G4}), which emit long reasoning traces, whereas \textsc{G4NT} has the lowest total cost across all methods.

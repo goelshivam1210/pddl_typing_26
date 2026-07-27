@@ -5,31 +5,32 @@ In this section we present three LLM querying strategies for resolving typing ga
 \subsection{Consensus Based Typing}
 The consensus-based approach exploits the stochastic nature of LLMs: repeated queries over the same prompt may yield distinct type assignments. By querying the LLM $q$ times, we build a distribution of votes over mappings between each object $o$ and candidate types $\tau \in \mathcal{T}$. We evaluate $q \in \{1, 3, 5\}$. The $q{=}1$ case issues a single query with no voting or relaxation and acts as a baseline that isolates the contribution of consensus aggregation from the underlying single-shot accuracy of the model.
 
-Algorithm~\ref{alg:consensus-typing} formalises this approach. The LLM generates $q$ candidate assignments $\hat{\sigma}$, from which a majority-vote assignment $\hat{\tau}$ is derived by selecting the most-voted type per object. The planner is first attempted under $\hat{\tau}$; if a plan is found, we terminate. Otherwise, for each object with type disagreement across queries, we substitute alternative types one object at a time, keeping all others at their majority type, in order of ascending confidence, attempting the planner after each substitution. We return the first plan found, or $\emptyset$ if no substitution yields a solution. This recovery explores only single-object relaxations of the majority assignment; problems that require several objects to be simultaneously re-typed beyond the majority vote --- as arise when a goal demands multiple distinct substitutions --- may therefore be missed, a limitation reflected in the bulk results.
+Algorithm~\ref{alg:consensus-typing} formalises this approach. The LLM generates $q$ candidate assignments $\hat{\sigma}$, from which a majority-vote assignment $\hat{\tau}$ is derived by selecting the most-voted type per object. The planner is first attempted under $\hat{\tau}$; if a plan is found, we terminate. Otherwise, for each object with type disagreement across queries, we substitute alternative types one object at a time, keeping all others at their majority type, in order of ascending confidence --- where an object's confidence is the fraction of the $q$ samples that agreed on its majority type --- attempting the planner after each substitution. We return the first plan found, or $\emptyset$ if no substitution yields a solution. This recovery explores only single-object relaxations of the majority assignment; problems that require several objects to be simultaneously re-typed beyond the majority vote --- as arise when a goal demands multiple distinct substitutions --- may therefore be missed, a limitation reflected in the bulk results.
 
 \begin{algorithm}
-  \caption{Consensus Semantic Typing}
+  \caption{CAST: Consensus Variant}
   \label{alg:consensus-typing}
   \begin{algorithmic}[1]
     \footnotesize
-    \Require domain $D$, problem $P=\langle O,I,G\rangle$, LLM, planner, number of queries $q$, prompt $\rho_T$
+    \Require domain $D$, problem $\Pi=\langle O,I,G\rangle$, LLM, planner, number of queries $q$, prompt $\rho_T$
     
     \State $\mathcal{S} \gets [\,]$
     
     \For{$i = 1$ to $q$} 
-      \State $\mathcal{S}.\mathrm{append}(LLM(D, P, \rho_T))$ \Comment{collect candidate $\hat{\sigma}$}
+      \State $\mathcal{S}.\mathrm{append}(LLM(D, \Pi, \rho_T))$ \Comment{collect candidate $\hat{\sigma}$}
     \EndFor
     
     \State $\hat{\tau} \gets \mathrm{MajorityVote}(\mathcal{S})$ \Comment{$\mathrm{argmax}$ per object}
+    \State for each $o$: $\mathrm{conf}(o) = \mathrm{votes}(o, \hat{\tau}(o)) \,/\, q$
     \State $A_o \gets [t \mid \mathrm{votes}(o,t) > 0]$ sorted by $\downarrow$ votes
-    \State $\mathcal{U} \gets [(o,\, A_o) \mid o \in O,\; |A_o| > 1]$ sorted by $\uparrow$ confidence$(o)$
+    \State $\mathcal{U} \gets [(o,\, A_o) \mid o \in O,\; |A_o| > 1]$ sorted by $\uparrow$ $\mathrm{conf}(o)$
     
     \For{each $(o, A_o) \in \mathcal{U}$} 
       \For{each $t \in A_o$}
-        \State $\tau' \gets \hat{\tau}$ with $o \mapsto t$ 
-        \State $\mathcal{P} \gets Planner(D, P|_{\tau'})$
-        \If{$\mathcal{P} \neq \emptyset$} 
-          \State \Return $\mathcal{P}$
+        \State $\tau' \gets \hat{\tau}$ with $o \mapsto t$
+        \State $\pi \gets Planner(D, \Pi|_{\tau'})$
+        \If{$\pi \neq \emptyset$}
+          \State \Return $\pi$
         \EndIf 
       \EndFor 
     \EndFor
@@ -44,31 +45,31 @@ Unlike consensus, which always issues exactly $q$ queries, the iterative and jud
 The feedback content is flexible. For iterative typing it may be as simple as a boolean planner-failure signal; our implementation returns the previous object-to-type assignments alongside the failure and instructs the LLM to reconsider $\hat{\sigma}$. The judge is prompted to reason at a high level about whether goal-relevant objects are correctly typed and whether the assignment is likely solvable; if none is approved within budget, the planner is run on the final proposal as a fallback.
 
 \begin{algorithm}
-  \caption{Iterative / Judge Typing}
+  \caption{CAST: Iterative / Judge Variant}
   \label{alg:iterative-judge}
   \begin{algorithmic}[1]
     \footnotesize
-    \Require domain $D$, problem $P=\langle O,I,G\rangle$, LLM, planner, max iterations $T$, prompt $\rho_T$; judge mode also uses Judge and prompt $\rho_J$
+    \Require domain $D$, problem $\Pi=\langle O,I,G\rangle$, LLM, planner, max iterations $T$, prompt $\rho_T$; judge mode also uses Judge and prompt $\rho_J$
 
     \State $f \gets \texttt{null}$ \Comment{no feedback on first call}
 
     \For{$t = 1$ to $T$}
-      \State $\hat{\sigma} \gets LLM(D, P, \rho_T, f)$
+      \State $\hat{\sigma} \gets LLM(D, \Pi, \rho_T, f)$
       \If{\textbf{judge mode}}
-        \State $j \gets Judge(D, P, \hat{\sigma}, \rho_J)$
+        \State $j \gets Judge(D, \Pi, \hat{\sigma}, \rho_J)$
         \If{$j.\mathrm{approved}$} \textbf{break} \Comment{plan below}
         \EndIf
         \State $f \gets j.\mathrm{feedback}$
       \Else \Comment{iterative mode}
-        \State $\mathcal{P} \gets Planner(D, P|_{\hat{\sigma}})$
-        \If{$\mathcal{P} \neq \emptyset$} \Return $\mathcal{P}$ \Comment{solved}
+        \State $\pi \gets Planner(D, \Pi|_{\hat{\sigma}})$
+        \If{$\pi \neq \emptyset$} \Return $\pi$ \Comment{solved}
         \EndIf
         \State $f \gets \mathrm{PlannerFeedback}(\hat{\sigma},\, t,\, T)$
       \EndIf
     \EndFor
 
     \If{\textbf{judge mode}}
-      \State \Return $Planner(D, P|_{\hat{\sigma}})$ \Comment{plan on final $\hat{\sigma}$}
+      \State \Return $Planner(D, \Pi|_{\hat{\sigma}})$ \Comment{plan on final $\hat{\sigma}$}
     \EndIf
     \State \Return $\emptyset$ \Comment{iterative: no plan within budget}
   \end{algorithmic}
