@@ -1,33 +1,29 @@
 \section{Methodology}
 
-In this section we present three LLM querying strategies for resolving typing gaps at runtime, each representing different trade-offs between token cost, flexibility, and robustness. All three approaches share a common structure: given an untyped or partially typed PDDL problem, an LLM is queried to assign types to available objects, and the resulting typed problem is passed to a symbolic planner. They differ in how the LLM is queried, how feedback is incorporated, and how disagreement is resolved.
+We present our three LLM querying strategies for resolving typing gaps at runtime. Each strategy represents different trade-offs between token cost, flexibility, and robustness. All three approaches share a common structure: given an untyped or partially typed PDDL problem, an LLM is queried to assign types to available objects, and the resulting typed problem is passed to a symbolic planner. They differ in how the LLM is queried, how feedback is incorporated, and how disagreement is resolved.
 
 \subsection{Consensus Based Typing}
-The consensus-based approach exploits the stochastic nature of LLMs: repeated queries over the same prompt may yield distinct type assignments. By querying the LLM $q$ times, we build a distribution of votes over mappings between each object $o$ and candidate types $\tau \in \mathcal{T}$. We evaluate $q \in \{1, 3, 5\}$. The $q{=}1$ case issues a single query with no voting or relaxation and acts as a baseline that isolates the contribution of consensus aggregation from the underlying single-shot accuracy of the model.
 
-Algorithm~\ref{alg:consensus-typing} formalises this approach. The LLM generates $q$ candidate assignments $\hat{\sigma}$, from which a majority-vote assignment $\hat{\tau}$ is derived by selecting the most-voted type per object. The planner is first attempted under $\hat{\tau}$; if a plan is found, we terminate. Otherwise, for each object with type disagreement across queries, we substitute alternative types one object at a time, keeping all others at their majority type, in ascending order of vote share, attempting the planner after each substitution. We return the first plan found, or $\emptyset$ if no substitution yields a solution. This recovery explores only single-object relaxations of the majority assignment; problems that require several objects to be simultaneously re-typed beyond the majority vote are outside the scope of this relaxation step.
-
-\begin{algorithm}
+\begin{algorithm}[t]
   \caption{CAST: Consensus Variant}
   \label{alg:consensus-typing}
   \begin{algorithmic}[1]
     \footnotesize
-    \Require domain $D$, problem $\Pi=\langle O,I,G\rangle$, LLM, planner, number of queries $q$, prompt $\rho_T$
+    \Require domain $D$, problem $\Pi=\langle O,I,G\rangle$, LLM, planner, number of queries $n$, prompt $\rho_T$
     
-    \State $\mathcal{S} \gets [\,]$
+    \State $\mathcal{Q} \gets [ \,]$
     
-    \For{$i = 1$ to $q$} 
-      \State $\mathcal{S}.\mathrm{append}(LLM(D, \Pi, \rho_T))$ \Comment{collect candidate $\hat{\sigma}$}
+    \For{$i = 1$ to $n$} 
+      \State $\mathcal{Q}.\mathrm{append}(L(D, \Pi, \rho_T))$ \Comment{collect candidate $\hat{\sigma}$}
     \EndFor
     
-    \State $\hat{\tau} \gets \mathrm{MajorityVote}(\mathcal{S})$ \Comment{$\mathrm{argmax}$ per object}
-    \State for each $o$: $\mathrm{share}(o) = \mathrm{votes}(o, \hat{\tau}(o)) \,/\, q$
-    \State $A_o \gets [t \mid \mathrm{votes}(o,t) > 0]$ sorted by $\downarrow$ votes
-    \State $\mathcal{U} \gets [(o,\, A_o) \mid o \in O,\; |A_o| > 1]$ sorted by $\uparrow$ $\mathrm{share}(o)$
-    
-    \For{each $(o, A_o) \in \mathcal{U}$} 
-      \For{each $t \in A_o$}
-        \State $\tau' \gets \hat{\tau}$ with $o \mapsto t$
+    \State $\mathrm{votes}(o,\tau) \gets |\{i \in \mathcal{Q} : i(o) = \tau\}|$ for $o \in O,\, \tau \in \mathcal{T}$
+    \State $\hat{\tau}(o) \gets \arg\max_{\tau} \mathrm{votes}(o,\tau)$ for $o \in O$
+    \State $A_o \gets [\tau \mid \mathrm{votes}(o,\tau) > 0]$ sorted by $\downarrow$ votes
+
+    \For{each $o \in O$ with $|A_o|>1$, sorted $\uparrow$ by vote share}
+      \For{each $\tau \in A_o$} \Comment{every candidate type for $o$}
+        \State $\tau' \gets \hat{\tau}$ with $o \mapsto \tau$ \Comment{relax $o$ to candidate type $\tau$}
         \State $\pi \gets Planner(D, \Pi|_{\tau'})$
         \If{$\pi \neq \emptyset$}
           \State \Return $\pi$
@@ -39,11 +35,10 @@ Algorithm~\ref{alg:consensus-typing} formalises this approach. The LLM generates
   \end{algorithmic}
 \end{algorithm}
 
+The consensus-based approach exploits the stochastic nature of LLMs: repeated queries over the same prompt may yield distinct type assignments. By querying the LLM $n$ times, we build a distribution of votes over mappings between each object $o$ and candidate types $\tau \in \mathcal{T}$. Algorithm~\ref{alg:consensus-typing} formalises this approach. The LLM generates $n$ candidate assignments $\hat{\sigma}$, from which a majority-vote assignment $\hat{\tau}$ is derived by selecting the most-voted type per object. The planner is first attempted under $\hat{\tau}$; if a plan is found, we terminate. Otherwise, for each object with type disagreement across queries, we substitute alternative types one object at a time. This keeps all others at their majority type, in ascending order of vote share. We then attempt the planner after each substitution and return the first plan found. If no substitution yields a solution, we return an $\emptyset$. This recovery explores only single-object relaxations of the majority assignment; problems that require several objects to be simultaneously re-typed beyond the majority vote are outside the scope of this relaxation step.
+
+
 \subsection{Iterative and Judge Typing}
-Unlike consensus, which always issues exactly $q$ queries, the iterative and judge strategies (Algorithm~\ref{alg:iterative-judge}) both re-query the LLM with feedback and can succeed in as few as one query, repeating for at most $T$ iterations. They differ only in what validates a proposed assignment $\hat{\sigma}$. \emph{Iterative} typing invokes the planner directly: on failure it re-queries the LLM with feedback and returns the first plan found, or $\emptyset$. \emph{Judge} typing instead interposes a judge call to the same LLM, prompted differently via $\rho_J$, that evaluates $\hat{\sigma}$ semantically before any planning; if approved, the loop exits and the planner is invoked once on that assignment, if it fails, judge typing returns $\emptyset$ rather than resuming refinement. Otherwise, the judge's feedback drives another round of typing. The distinction is where the loop is closed: iterative is guided by planner failure, whereas judge filters semantically poor assignments before planning is attempted at all, and never revisits an assignment the judge has already approved.
-
-The feedback content is flexible. For iterative typing it may be as simple as a boolean planner-failure signal; our implementation returns the previous object-to-type assignments alongside the failure and instructs the LLM to reconsider $\hat{\sigma}$. The judge is prompted to reason at a high level about whether goal-relevant objects are correctly typed and whether the assignment is likely solvable; if none is approved within budget, the planner is run on the final proposal as a fallback.
-
 \begin{algorithm}
   \caption{CAST: Iterative / Judge Variant}
   \label{alg:iterative-judge}
@@ -54,7 +49,7 @@ The feedback content is flexible. For iterative typing it may be as simple as a 
     \State $f \gets \texttt{null}$ \Comment{no feedback on first call}
 
     \For{$t = 1$ to $T$}
-      \State $\hat{\sigma} \gets LLM(D, \Pi, \rho_T, f)$
+      \State $\hat{\sigma} \gets L(D, \Pi, \rho_T, f)$
       \If{\textbf{judge mode}}
         \State $j \gets Judge(D, \Pi, \hat{\sigma}, \rho_J)$
         \If{$j.\mathrm{approved}$} \textbf{break} \Comment{plan below}
@@ -74,3 +69,8 @@ The feedback content is flexible. For iterative typing it may be as simple as a 
     \State \Return $\emptyset$ \Comment{iterative: no plan within budget}
   \end{algorithmic}
 \end{algorithm}
+
+Unlike consensus, which always issues exactly $n$ queries, the iterative and judge strategies (Algorithm~\ref{alg:iterative-judge}) both re-query the LLM with feedback and can succeed in as few as one query, repeating for at most $T$ iterations. They differ only in what validates a proposed assignment $\hat{\sigma}$. \emph{Iterative} typing invokes the planner directly: on failure, it re-queries the LLM with feedback and returns the first plan found, or $\emptyset$. \emph{Judge} typing instead interposes a judge call to the same LLM, prompted differently via $\rho_J$, that evaluates $\hat{\sigma}$ semantically before any planning; if approved, the loop exits and the planner is invoked once on that assignment; if it fails, judge typing returns $\emptyset$ rather than resuming refinement. Otherwise, the judge's feedback drives another round of typing. The distinction is where the loop is closed: iterative is guided by planner failure, whereas judge filters semantically poor assignments before planning is attempted at all. It never revisits an assignment the judge has already approved.
+
+Both methods utilize feedback to re-query the LLM upon failure; however, the content of the feedback varies. For iterative typing it may be as simple as a boolean planner-failure signal; our implementation returns the previous object-to-type assignments alongside the failure and instructs the LLM to reconsider $\hat{\sigma}$. The judge is prompted to reason at a high level about whether goal-relevant objects are correctly typed and whether the assignment is likely solvable; if none is approved within budget, the planner is run on the final proposal as a fallback.
+

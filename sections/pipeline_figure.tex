@@ -6,9 +6,9 @@
   \begin{lrbox}{\pddlDomA}\begin{lstlisting}[style=pddl]
 (define (domain stretch_cleanup)
   (:requirements :strips :typing)
-  (:types robot graspable - object
+  (:types robot graspable surface - object
           eraser - graspable
-          blackboard - object)
+          blackboard - surface)
   { ... })
 \end{lstlisting}\end{lrbox}%
   \begin{lrbox}{\pddlProbU}\begin{lstlisting}[style=pddl]

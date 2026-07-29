@@ -1,22 +1,37 @@
-\section{Results}
+\section{Results and Discussion}
+
+% \subsection{Results}
+Table~\ref{tab:results} reports recovery across the construction configurations and four semantic domains, addressing \textit{RQ1}, \textit{RQ2}, \textit{RQ3}, \textit{RQ5}, and \textit{RQ6}. Table~\ref{tab:refusal} reports refusal accuracy on no-substitution problems, addressing \textit{RQ4}.
+
+\paragraph{Single-Substitution Recovery and Baseline Comparison (\textit{RQ1}, \textit{RQ6}).}
+ On single-substitution problems CAST recovers near-perfectly: the Gemma4 variants reach $100\%$ and Deepseek is close behind. Both unstructured baselines are weaker and far less consistent. Constraining the LLM to a validated type assignment therefore recovers substitutions more reliably than free-form PDDL rewriting (direct) or end-to-end planning (APB).
+% CAST achieves strong single-substitution recovery.
+% seven of nine model--strategy configurations score between $96\%$ and $100\%$, 
+% while DS-Judge and G4-Judge reach $90\%$ and $86\%$, respectively
+% . CAST is also more consistent across models: under DS and G4NT, every CAST variant outperforms Direct and APB. G4-Direct is the notable exception, matching the best CAST configurations at $100\%$. Thus, restricting the LLM to validated type assignments improves recovery consistency, although unconstrained repair can match CAST in individual configurations.
 
 
-Table~\ref{tab:results} reports recovery for every configuration and addresses \textit{RQ1}, \textit{RQ2}, \textit{RQ3}, and \textit{RQ6}.
+% \textit{RQ1/RQ6}: On single-substitution problems CAST recovers near-perfectly: the Gemma4 variants reach $100\%$ and Deepseek is close behind. Both unstructured baselines are weaker and far less consistent. Constraining the LLM to a validated type assignment therefore recovers substitutions more reliably than free-form PDDL rewriting (direct) or end-to-end planning (APB).
+\paragraph{Simultaneous Substitutions (\textit{RQ2}).}Bulk problems are the most difficult configuration across all evaluation families, with recovery ranging from $38\%$ to $68\%$ with substantial variation. CAST achieves the highest recovery under each model, although G4-Direct ties the best G4 CAST result at $60\%$. Because several substitutions are required simultaneously, every assignment must be valid for the plan to succeed. Even G4-Direct falls from $100\%$ on single-substitution problems to $60\%$ on bulk, while the best overall result is only $68\%$. This consistent decline indicates that the primary difficulty is obtaining multiple correct substitutions simultaneously.
 
-\textit{RQ1/RQ6}: On single-substitution problems CAST recovers near-perfectly --- the Gemma4 variants saturate and Deepseek is close --- while both unstructured baselines are weaker and far less consistent. Constraining the LLM to a validated type assignment therefore recovers substitutions more reliably than free-form PDDL rewriting (direct) or end-to-end planning (APB).
+% \textit{RQ2}: \textsc{bulk} problems, which require several simultaneous substitutions, are the hardest category for every method, with the strongest configurations plateauing near $60\%$ at high variance. Every required substitution must be correct at once for the plan to succeed, so a single wrong assignment among several is enough to fail the whole problem; even \textsc{G4} under the \emph{direct} baseline, which reaches $100\%$ on \textsc{single}, falls to the same $\sim\!60\%$ range on \textsc{bulk}, showing this is a property of the task rather than of any particular querying strategy.
 
-\textit{RQ2}: \textsc{bulk} problems, which require several simultaneous substitutions, are the hardest category for every method, with the strongest configurations plateauing near $60\%$ at high variance. The bottleneck is joint-substitution combinatorics rather than the querying interface: no approach preserves its single-substitution accuracy as goals accumulate.
+\paragraph{Robustness Across Semantic Domains (\textit{RQ5}).}The semantic-domain columns of Table~\ref{tab:refusal} report single-substitution recovery across semantic domains. The G4 and G4NT consensus and iterative configurations remain between $98\%$ and $100\%$ across all four domains, demonstrating strong transfer across semantic contexts. The judge variants and DeepSeek configurations show greater sensitivity, particularly in the kitchen domain. 
+% Baseline performance is more model-dependent: G4-Direct achieves $100\%$, whereas the other Direct configurations range from $70\%$ to $98\%$, and APB ranges from $32\%$ to $100\%$. Thus, constrained typing improves cross-domain consistency, though it does not outperform every baseline configuration.
 
-\textit{RQ3}: Under increasing distractor counts (\textsc{stress}) the Gemma4 CAST configurations show no degradation across all three levels, while Deepseek is more variable. Because \textsc{stress} still requires only a single substitution, the baselines also hold up far better here than on \textsc{bulk}.
+\paragraph{Refusal Accuracy (\textit{RQ4}).}Correct refusal is critical for deployment because a planner-compatible but functionally invalid substitution can produce ineffective or unsafe behavior. Judge achieves the highest refusal accuracy across all models, averaging $76.7\%$, compared with $0.7\%$ for Direct and $8.0\%$ for APB. Consensus averages $55.3\%$, while iterative refinement reaches only $20.0\%$. The baselines usually propose invalid substitutions rather than returning no plan, demonstrating the value of explicit semantic evaluation. Iterative refinement repeatedly revises assignments after planner failures, increasing the likelihood of a solvable but invalid assignment. Even Judge fails to refuse in roughly one-quarter of cases, leaving reliable refusal an open challenge and exposing a clear recovery--refusal trade-off.
 
-Across the board Gemma4 outperforms Deepseek with CAST. \textsc{G4} and \textsc{G4NT} differ little on recovery but sharply elsewhere: \textsc{G4NT} refuses far more reliably (Table~\ref{tab:refusal}) and, lacking a reasoning trace, is substantially cheaper (Figure~\ref{fig:token_usage}).
+\paragraph{Token Usage.}Figure~\ref{fig:token_usage} reports average input and output token usage per problem. Consensus is the most expensive CAST variant because it always issues $n$ independent queries. Judge is cheaper, requiring in the best case a single typing and judge query per round, while iterative refinement is the least expensive CAST variant because at best it terminates after a single initial query. Direct and APB have the lowest overall token usage.
 
-\textit{RQ5}: The right block reports single-substitution recovery across four semantically distinct but structurally identical domains. Typing is robust to this renaming --- the Gemma4 configurations stay at or near $100\%$ everywhere --- whereas the unstructured baselines are far more brittle (APB dips as low as $32\%$), showing that end-to-end planning and free-form rewriting are more sensitive to surface naming than constrained typing.
+% \textit{RQ3}: Under increasing distractor counts (\textsc{stress}) the Gemma4 CAST configurations show no degradation across all three levels, while Deepseek is more variable. Because \textsc{stress} still requires only a single substitution, the baselines also hold up far better here than on \textsc{bulk}.
+
+% \textit{RQ5}: The Synonym Domains columns of Table~\ref{tab:results} report single-substitution recovery across four semantically distinct but structurally identical domains. Typing is robust to this renaming (the Gemma4 configurations stay at or near $100\%$ everywhere), whereas the unstructured baselines are far more brittle (APB dips as low as $32\%$), showing that end-to-end planning and free-form rewriting are more sensitive to surface naming than constrained typing.
+
 
 % ========== TABLE 2: REFUSAL ACCURACY ==========
 \begin{table}[t]
 \centering
-\caption{Refusal accuracy on Construction \textsc{no\_sub} problems (\% of runs that correctly fail to produce a plan when no valid substitute exists). $\pm$ shows 1 standard deviation. \textsc{Cons} is consensus at $n{=}3$.}
+\caption{Refusal accuracy on construction \textsc{no\_sub} problems. Model columns report the mean $\pm$ standard deviation across ten problems. \textsc{Cons} denotes consensus at $n=3$.}
 \label{tab:refusal}
 \footnotesize
 \renewcommand{\arraystretch}{0.9}
@@ -25,28 +40,20 @@ Across the board Gemma4 outperforms Deepseek with CAST. \textsc{G4} and \textsc{
 \toprule
 \textbf{Method} & \textbf{DS} & \textbf{G4} & \textbf{G4NT} & \textbf{Avg} \\
 \midrule
-Cons       & 60.0 $\pm$ 32.7 & 56.0 $\pm$ 46.0 & 50.0 $\pm$ 46.4 & 55.3 $\pm$ 5.0 \\
-Iterative  & 18.0 $\pm$ 25.7 & 2.0 $\pm$ 6.3 & 40.0 $\pm$ 48.1 & 20.0 $\pm$ 19.1 \\
-Judge      & \textbf{66.0} $\pm$ 31.3 & \textbf{84.0} $\pm$ 35.0 & \textbf{80.0} $\pm$ 34.0 & \textbf{76.7} $\pm$ 9.5 \\
+Cons       & 60.0 $\pm$ 32.7 & 56.0 $\pm$ 46.0 & 50.0 $\pm$ 46.4 &  55.3 \\
+Iterative  & 18.0 $\pm$ 25.7 & 2.0 $\pm$ 6.3 & 40.0 $\pm$ 48.1 &  20.0 \\
+Judge      & \textbf{66.0} $\pm$ 31.3 & \textbf{84.0} $\pm$ 35.0 & \textbf{80.0} $\pm$ 34.0 & \textbf{76.7} \\
 \midrule
-Direct     & 2.0 $\pm$ 6.3 & 0.0 $\pm$ 0.0 & 0.0 $\pm$ 0.0 & 0.7 $\pm$ 1.2 \\
-APB        & 24.0 $\pm$ 32.4 & 0.0 $\pm$ 0.0 & 0.0 $\pm$ 0.0 & 8.0 $\pm$ 13.9 \\
+Direct     & 2.0 $\pm$ 6.3 & 0.0 $\pm$ 0.0 & 0.0 $\pm$ 0.0 &   0.7 \\
+APB        & 24.0 $\pm$ 32.4 & 0.0 $\pm$ 0.0 & 0.0 $\pm$ 0.0 &   8.0 \\
 \bottomrule
 \end{tabular}}
 \end{table}
 
-\textit{RQ4}: Refusal (Table~\ref{tab:refusal}) is where the methods diverge most, and where the structured constraint proves decisive. Both unstructured baselines essentially never refuse --- the direct PDDL-repair baseline declines on just $0.7\%$ of unsolvable problems on average and APB on $8\%$ --- because both simply fabricate a substitution whenever asked to produce a plan. Only the typed methods, which hand a \emph{strict} planner a validated assignment, can decline by leaving the required type unfilled. Among them the judge mode refuses most reliably ($77\%$ average), iterative collapses ($20\%$, as low as $2\%$ for \textsc{G4}) because it loops until a plan is found, and consensus is intermediate. No method refuses perfectly, exposing a recovery--refusal trade-off: the same willingness that recovers hard substitutions also accepts invalid ones.
+% \textit{RQ4}: Table \ref{tab:refusal} reports the refusal accuracy of CAST compared with the baselines, and we observe that a structured approach like ours has an advantage over the unstructured baseline methods. Both baselines never refuse -- more specifically, the direct PDDL-repair baseline declines on just $0.7\%$ of unsolvable problems on average and APB on $8\%$ --- because both provide invalid substitutions rather than refusing to solve. CAST, however, allows for the LLM to leave pre-existing type mappings in the case that no substitution exists. Among the CAST variants, the judge mode refuses most reliably ($77\%$ average), iterative collapses ($20\%$, as low as $2\%$ for \textsc{G4}) because it loops until a plan is found which often leads the LLM to propose invalid substitutions, and consensus is intermediate. No method refuses perfectly, exposing a recovery--refusal trade-off: the same willingness that recovers hard substitutions also accepts invalid ones.
 
-This trade-off interacts with model choice: thinking-enabled models (\textsc{DS}, \textsc{G4}) most readily propose creative retypings such as \texttt{ripe-banana} to \texttt{hammer}, whereas \textsc{G4NT} is more literal and declines more often.
+% \paragraph{Token Usage}
+% Figure~\ref{fig:token_usage} shows average LLM token usage per problem (input and output) across all domains and methods. Consensus is the most expensive CAST variant, as it always issues $n$ independent queries (shown here at $n{=}3$; token usage for additional values of $n$ is available in the Appendix). Comparatively, the judge mode is cheaper as it only requires a single typing query along with a lightweight judge call, plus occasional re-queries when the judge is unsatisfied. The iterative approach is the cheapest of the CAST variants despite its looping behavior: its lower bound is a single LLM query, since a valid plan after the first iteration requires no further calls. The direct and APB baselines are the cheapest of the tested methods.
 
-\begin{figure}
-  \centering
-  \includegraphics[width=0.45\textwidth]{figures/token_usage.png}
-  \caption{\small{Average LLM token usage per problem (input: solid, output: hatched) across methods and models. Error bars show $\pm 1$ standard deviation of the total tokens per problem.}}
-    \label{fig:token_usage}
-\end{figure}
 
-\subsubsection{Token Usage}
-Figure~\ref{fig:token_usage} shows average LLM token usage per problem (input and output) across all domains and methods. Consensus is the most expensive CAST variant, as it issues $n$ independent queries regardless of outcome (shown here at $n{=}3$; cost scales linearly with $n$, see Appendix~\ref{app:consensus}). The judge mode is cheaper --- it pairs a single typing query with a lightweight judge call, plus occasional re-queries when the judge is unsatisfied.
 
-The iterative approach is the cheapest of the CAST variants despite its looping behaviour: its lower bound is a single LLM query, since a valid plan after the first iteration requires no further calls. The direct and APB baselines are cheaper still. Their token profile is notably different, though: output tokens dominate for the thinking-enabled models (\textsc{DS} and \textsc{G4}), which emit long reasoning traces, whereas \textsc{G4NT} has the lowest total cost across all methods.

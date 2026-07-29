@@ -107,14 +107,15 @@ series = {AAMAS '24}
 	file = {González-Santamarta et al. - 2024 - Integration of Large Language Models within Cognit.pdf:/home/brennan/Zotero/storage/8MK7GZJB/González-Santamarta et al. - 2024 - Integration of Large Language Models within Cognit.pdf:application/pdf},
 }
 
-@article{singh_twostep_2024,
-  title={Twostep: Multi-agent task planning using classical planners and large language models},
-  author={Bai, David and Singh, Ishika and Traum, David and Thomason, Jesse},
-  journal={arXiv preprint arXiv:2403.17246},
-  year={2024}
+@misc{singh_twostep_2024,
+  title={TwoStep: Multi-agent Task Planning using Classical Planners and Large Language Models}, 
+  author={David Bai and Ishika Singh and David Traum and Jesse Thomason},
+  year={2025},
+  eprint={2403.17246},
+  archivePrefix={arXiv},
+  primaryClass={cs.AI},
+  url={https://arxiv.org/abs/2403.17246}, 
 }
-
-
 
 @incollection{scheutzetal2018diarcchapter,
   title={An Overview of the Distributed Integrated Affect and Reflection Cognitive DIARC Architecture},
@@ -139,21 +140,15 @@ series = {AAMAS '24}
   howpublished = "\url{https://doi.org/10.5281/zenodo.3700819}"
 }
 
-@misc{daganDynamicPlanningLLM2023a,
-	title = {Dynamic {Planning} with a {LLM}},
-	url = {http://arxiv.org/abs/2308.06391},
-	doi = {10.48550/arXiv.2308.06391},
-	abstract = {While Large Language Models (LLMs) can solve many NLP tasks in zero-shot settings, applications involving embodied agents remain problematic. In particular, complex plans that require multi-step reasoning become difficult and too costly as the context window grows. Planning requires understanding the likely effects of one’s actions and identifying whether the current environment satisfies the goal state. While symbolic planners find optimal solutions quickly, they require a complete and accurate representation of the planning problem, severely limiting their use in practical scenarios. In contrast, modern LLMs cope with noisy observations and high levels of uncertainty when reasoning about a task. Our work presents LLM Dynamic Planner (LLM-DP): a neurosymbolic framework where an LLM works hand-in-hand with a traditional planner to solve an embodied task. Given action-descriptions, LLM-DP solves Alfworld faster and more efficiently than a naive LLM ReAct baseline.},
-	language = {en},
-	urldate = {2025-11-04},
-	publisher = {arXiv},
-	author = {Dagan, Gautier and Keller, Frank and Lascarides, Alex},
-	month = aug,
-	year = {2023},
-	note = {arXiv:2308.06391 [cs]},
-	keywords = {Computer Science - Robotics, Computer Science - Computation and Language},
-	file = {PDF:files/1198/Dagan et al. - 2023 - Dynamic Planning with a LLM.pdf:application/pdf},
+@inproceedings{
+daganDynamicPlanningLLM2023a,
+title={Dynamic Planning with a {LLM}},
+author={Gautier Dagan and Frank Keller and Alex Lascarides},
+booktitle={Language Gamification - NeurIPS 2024 Workshop},
+year={2024},
+url={https://openreview.net/forum?id=ewx2RFiEYR}
 }
+
 
 @inproceedings{silver2022pddl,
   title={{PDDL} Planning with Pretrained Large Language Models},
@@ -469,22 +464,20 @@ doi = {10.1109/ICDL53763.2022.9962230}
   url={https://arxiv.org/abs/2109.10892}
 }
 
-@article{sam,
-  title={SAM 2: Segment Anything in Images and Videos},
-  author={Ravi, Nikhila and Gabeur, Valentin and Hu, Yuan-Ting and Hu, Ronghang and Ryali, Chaitanya and Ma, Tengyu and Khedr, Haitham and R{\"a}dle, Roman and Rolland, Chloe and Gustafson, Laura and Mintun, Eric and Pan, Junting and Alwala, Kalyan Vasudev and Carion, Nicolas and Wu, Chao-Yuan and Girshick, Ross and Doll{\'a}r, Piotr and Feichtenhofer, Christoph},
-  journal={arXiv preprint arXiv:2408.00714},
-  url={https://arxiv.org/abs/2408.00714},
-  year={2024}
+@inproceedings{
+sam,
+title={{SAM} 2: Segment Anything in Images and Videos},
+author={Nikhila Ravi and Valentin Gabeur and Yuan-Ting Hu and Ronghang Hu and Chaitanya Ryali and Tengyu Ma and Haitham Khedr and Roman R{\"a}dle and Chloe Rolland and Laura Gustafson and Eric Mintun and Junting Pan and Kalyan Vasudev Alwala and Nicolas Carion and Chao-Yuan Wu and Ross Girshick and Piotr Dollar and Christoph Feichtenhofer},
+booktitle={The Thirteenth International Conference on Learning Representations},
+year={2025},
+url={https://openreview.net/forum?id=Ha6RTeWMd0}
 }
 
-@misc{gdino,
-  title={{Grounding DINO}: Marrying {DINO} with Grounded Pre-Training for Open-Set Object Detection},
-  author={Liu, Shilong and Zeng, Zhaoyang and Ren, Tianhe and Li, Feng and Zhang, Hao and Yang, Jie and Jiang, Qing and Li, Chunyuan and Yang, Jianwei and Su, Hang and Zhu, Jun and Zhang, Lei},
-  year={2023},
-  eprint={2303.05499},
-  archivePrefix={arXiv},
-  primaryClass={cs.CV},
-  url={https://arxiv.org/abs/2303.05499},
+@article{gdino,
+  title={Grounding dino: Marrying dino with grounded pre-training for open-set object detection},
+  author={Liu, Shilong and Zeng, Zhaoyang and Ren, Tianhe and Li, Feng and Zhang, Hao and Yang, Jie and Li, Chunyuan and Yang, Jianwei and Su, Hang and Zhu, Jun and others},
+  journal={arXiv preprint arXiv:2303.05499},
+  year={2023}
 }
 
 @inproceedings{jones2026requirements,
@@ -589,3 +582,29 @@ pages={153–161} }
   primaryClass  = {cs.LG},
   url       = {https://arxiv.org/abs/2604.14140}
 }
+
+@article{li2026recover,
+  title={Recover, Discover, Plan: Learning Skills and Concepts from Robot Failures},
+  author={Li, Bowen and Mishra, Mayank and Liu, Y Isabel and Tao, Stone and Kumar, Nishanth and Gray, Alexander G and Wickramarachchi, Ruwan and Francis, Jonathan and Scherer, Sebastian and Silver, Tom},
+  journal={arXiv preprint arXiv:2606.18328},
+  year={2026}
+}
+
+@Article{li2024learning,
+title = {Learning to Bridge the Gap: Efficient Novelty Recovery with Planning and Reinforcement Learning},
+author = {Li, Alicia and Kumar, Nishanth and Lozano-Pérez, Tomás and Kaelbling, Leslie Pack},
+year = {2024},
+url = {https://www.arxiv.org/pdf/2409.19226},
+journal = {NeurIPS 2024 Workshop on Open-World Agents},
+}
+
+@INPROCEEDINGS{jiang2018integrating,
+  author={Jiang, Yuqian and Yang, Fangkai and Zhang, Shiqi and Stone, Peter},
+  booktitle={2019 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)}, 
+  title={Task-Motion Planning with Reinforcement Learning for Adaptable Mobile Service Robots}, 
+  year={2019},
+  volume={},
+  number={},
+  pages={7529-7534},
+  keywords={Costs;Uncertainty;Service robots;Navigation;Dynamics;Reinforcement learning;Robot sensing systems;Planning;Iterative methods;Intelligent robots},
+  doi={10.1109/IROS40897.2019.8967680}}

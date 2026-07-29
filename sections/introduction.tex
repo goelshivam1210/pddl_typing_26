@@ -2,9 +2,11 @@
 
 \section{Introduction}
 \label{sec:intro}
-Robots deployed in open-world environments must operate under conditions that
-cannot be fully anticipated at design time~\cite{wray2025requirements}. Expected tools may be missing,
-unfamiliar objects may be present, and the available resources may support ways
+
+% Tokens
+% $VMMgg9LKFaHX7GZjt9q-IBZ9lOPGuPXaUYMj1FtAeMY$
+% $TsfrHQQAXkmDvnixJk1y1_gx5h25PmSJXdAtXQJkEF0$
+Robots operating in real-world deployments must operate under conditions that cannot be fully anticipated at design time~\cite{wray2025requirements}. Expected tools may be missing, unfamiliar objects may be present, and the available resources may support ways
 of completing a task that were not encoded in advance. Reliable autonomy
 therefore requires some capacity to adapt to the current environment without
 giving up the structure and predictability needed to understand and verify the
@@ -13,7 +15,7 @@ robot's behavior.
 Symbolic task planners provide this structure by reasoning over explicit models
 of objects, actions, and their effects \cite{mcdermott1998pddl}. However, their
 ability to find a plan depends on the environment being represented in the
-planner's predefined vocabulary. A runtime perception system may recognize
+domain's predefined vocabulary. A runtime perception system may recognize
 objects such as a \texttt{cloth}, \texttt{cup}, and \texttt{marker}, while the
 planning domain defines actions over functional types such as
 \texttt{eraser}, \texttt{container}, and \texttt{writing-tool}. When no
@@ -65,7 +67,7 @@ and judge-based selection, and evaluate their ability to recover valid plans,
 refuse problems for which no suitable substitute exists, and manage inference
 costs. Across multiple problem configurations and semantic variations, CAST
 substantially outperforms both an end-to-end LLM planning baseline and an
-unconstrained baseline that lets the LLM rewrite the PDDL directly, on tasks
+unconstrained baseline inspired by \citet{gragera2023exploring} that lets the LLM rewrite the PDDL directly, on tasks
 requiring functional substitution. We additionally demonstrate the complete pipeline on
 a physical robot.
 
